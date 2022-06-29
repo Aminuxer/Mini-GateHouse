@@ -1,0 +1,24 @@
+body {background-color: gray; font-family: Arial; font-weight: bold;}
+
+a:link,a:visited {color: silver; text-decoration: none;} a:hover { color: white; outline: none; text-decoration: underline;}
+
+table {background-color: #CCFFCC; border-style: none ; text-align: center; border-collapse: collapse;}
+td {font-weight : bold ; border-style: solid ; border-color: black; border-width: 1pt;}
+.actd {border-style: solid ; border-color: silver; border-width: 2px;}
+.inactd {border-style: solid ; border-color: black; border-width: 1pt; background-color: gray; } 
+.std {border-style: solid ; border-color: black; border-width: 1pt; background-color: #DDDDDD; }
+.sml {font-size: 9pt; }
+.req {background-color: #FFFFEA; }
+
+INPUT {background-color: white; font-weight: bold;}
+SELECT {background-color: white; font-weight: bold;}
+TEXTAREA {background-color: white; font-weight: bold;}
+.btntd { background-color: aqua; }
+.btn { background-color: yellow; color: black;}
+
+.comment {color: green; font-size: 9pt; }
+.usop_alert {color: red; font-size: 12pt; font-weight: bold; text-align: left; }
+
+.help  {background: gray; color: #66CCFF; font-weight : bold ;}
+.help2 { text-align: left; margin: 20px; }
+#exitt {background-color: #3399FF; font-size: 14pt;  font-weight : bold ; color: red; text-align : center; text-decoration: none; }
