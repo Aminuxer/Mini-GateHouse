@@ -249,7 +249,7 @@ if ($new_pass == $new_pass2 AND $new_pass == sha1($user_info["login"])) { print 
 if ($new_pass == $null_sha1 AND $new_pass2 = $null_sha1) { print '<tr><td class="noborder" colspan="3"><font class="b">Пустой пароль недопустим.</font></td></tr>'; $pass_correct++; }
 print '<tr><td class="noborder" colspan="3"><Br></td></tr>';
    if ($pass_correct == 0) {
-mysqli_query ($sql, "UPDATE `operators` SET `passwd` = '$new_pass' WHERE `login` = '".$user_info["login"]."' AND `id` = '".$user_info["id"]."' AND `enable` = '1' AND (`passwd` = '".$null_sha1."' OR `is_root` = '1') LIMIT 1");
+mysqli_query ($sql, "UPDATE `operators` SET `passwd` = '$new_pass' WHERE `login` = '".$user_info["login"]."' AND `id` = '".$user_info["id"]."' AND `enable` = '1' LIMIT 1");
 if (mysqli_error($sql) != '') { print '<tr><td class="noborder" colspan="3"><fontclass="b">Не удалось изменить пароль.<Br>Обратитесь к администратору системы.</font></td></tr>';
 } ELSE { print '<tr><td class="noborder" colspan="3"><font class="b1">Пароль успешно изменен.</font></td></tr>'; };
    } ELSE { print '<tr><td class="noborder" colspan="3"><a href="?ops=newpwd"><INPUT type="button" value="Попробовать еще раз" OnClick="location.href=\'?ops=newpwd\';"></a></td></tr>'; };
