@@ -92,3 +92,16 @@ readonly
 
 * Может ли база данных быть на другом сервере ?
   - Да. На шаге 3). создатйе пользоватлея на том сервере, где развёртнута БД, и исправьте значения в конфиге.
+
+* Я забыл пароль суперпользователя. Как его сбросить ?
+  - Нужно подключиться к базе данных, например, консольгым клиентом `mysql`
+  Смотрим список пользователей:
+`USE gatehouse;`
+`SELECT * FROM operators;`
+Находим нужного пользователя, ставим ему пароль:
+`UPDATE operators SET passwd = SHA1('mynewpassword') WHERE login = 'myusername' LIMIT 1`
+Если надо поменять права доступа, аналогично:
+`UPDATE operators SET is_root = 1 WHERE login = 'myusername' LIMIT 1`
+Пробуем зайти.
+
+![Mini-GateHouse](https://user-images.githubusercontent.com/13812192/176518537-5c4206ef-acc9-4917-b58a-7994d19c1c0e.png)
