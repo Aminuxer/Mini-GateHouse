@@ -6,42 +6,16 @@ if ( preg_replace("/[0-9]/", "", $id) != '' ) {$id = 0 ;}
 
 ob_start('ob_gzhandler');
 require("options.php");   /* подключим файл настроек, из него берутся $db_hoster, $db_login, $db_pwd, $db_name */
+include("localization/default.php");   /* Локализация / Localizaion */
 include("disable_cache_headers.php");
 
    /* START LOAD OPTIONS */
 $curr_date = date("Y-m-d");   /* Значение текущей даты */
 $curr_time = date("H:i:s");   /* Значение текущего времени */
 
-   /* START ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ (Вдруг в БД таблица опций грохнулась) */
-$index_page_title = 'УЧЕТ ПОСЕТЕТЕЛЕЙ / АВТОМОБИЛЕЙ';   # Заголовок окна браузера
-$admin_page_title = 'Настройка';            # Заголовок окна браузера для админки
-$index_add_pos_button = 'ДОБАВИТЬ ВИЗИТ';                 # Надпись на кнопке добавления посетителя
-$index_add_avt_button = 'ДОБАВИТЬ МАШИНУ';                # Надпись на кнопке добавления автомобиля
-$index_add_pos_confm = 'Все верно';                  # Подтверждение для посетителя (галка)
-$index_add_avt_confm = 'Все верно';                  # Подтверждение для автомобиля (галка)
-$index_num_pos_dates = '5';                            # За сколько дней показывать посетителей
-$index_num_avt_dates = '5';                            # За сколько дней показывать автомобили
-$index_date_edit = '1';                          # Позволять ли редактировать дату
-$index_time_edit = '1';                          # Позволять ли редактировать время
-$index_confirm_button = 'Так точно !';                 # Текст для кнопок [OK], [Да]
-$index_cancel_button = '[ СБРОС ]';               # Текст для кнопок [Cancel], [Нет]
-$index_pos_edit_text = 'Ввести время';             # Текст ссылки для ухода посетителя
-$index_avt_edit_text = 'Ввести время';             # Текст ссылки для выезда автомобиля
-$index_pos_ststr = '[F5] - Обновить время';       # Текст статус-строки для посетителя
-$index_avt_ststr = '[F5] - Обновить время';       # Текст статус-строки для автомобиля
-$index_tech_support = 'Звоните в Тех.Отдел :)';   # В "Правилах" - данные о суппорте
-$admin_apply_filters = 'Применить фильтры';       # Текст для кнопки, запускающей фильтры
-$admin_cancel_button = 'Сброс';             # Текст для кнопки сброса фильтров
-$admin_no_data = 'Нет данных';               # Сообщение об отсутствии данных.
-$admin_save_changes = 'СОХРАНИТЬ ИЗМЕНЕНИЯ' ;     # Текст для кнопки сохранения настроек
-$index_cancel_delay = '0';                        # Задержка (сек) при нажатии [отмены]
-$index_action_delay = '1';                        # Задержка (сек) при выполнении действия
-   /* END ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ (Вдруг в БД таблица опций грохнулась) */
-
-$auth_ok = '0';
-$sql = mysqli_connect($db_hoster, $db_login, $db_pwd, $db_name) or $auth_ok = 'ERROR - connection to server FAILED';
-               mysqli_query($sql, "SET NAMES UTF-8;");   /* Без этого текст будет кракозяблами */
-$options_res = mysqli_query ($sql, "SELECT abbr, value FROM options") or print '<font class="std">Нет таблицы настроек - применены стандартные;</font><Br><Br>';
+$sql = mysqli_connect($db_hoster, $db_login, $db_pwd, $db_name) or die('ERROR - connection to MySQL server FAILED<Br/>'.mysqli_connect_error($sql));
+               mysqli_query($sql, "SET NAMES UTF-8;");   /* Кодировка БД / DB Charset */
+$options_res = mysqli_query ($sql, "SELECT abbr, value FROM options") or die('ERROR - NO data in MySQL table options<Br/>'.mysqli_error($sql));
 while ($ops_row = mysqli_fetch_array($options_res)) {
    $opsrabbr = $ops_row["abbr"];
    ${$opsrabbr} = $ops_row["value"];
@@ -125,12 +99,12 @@ print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://ww
 body { background-color: silver; align: center; } table { text-align: left; border-collapse: collapse;}
 td { font-family: arial; font-size: 16pt; border: 1px solid gray; height: 50px; }
 INPUT { font-size: 16pt; color: Blue; background-color: #DEEEEE; } .ttl { background-color: #EEEEEE; text-align: center; font-style: bold; }
-</style><meta http-equiv="Content-Type" content="text/html; charset=cp1251"></head><body>
+</style><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>
 <div align="center"><form method="POST"><table>
 <tr><td colspan="2" class="ttl">'.$index_page_title.'</td></tr>
-<tr><td>Логин:</td><td><input type="text" name="ff_login" size="25"></td></tr>
-<tr><td>Пароль:</td><td><input type="password" name="ff_pwd" size="25"></td></tr>
-<tr><td colspan="2" class="ttl"><input type="submit" value="Войти"></td></tr><table></FORM>
+<tr><td>'.$loc_loginform_login.':</td><td><input type="text" name="ff_login" size="25"></td></tr>
+<tr><td>'.$loc_loginform_password.':</td><td><input type="password" name="ff_pwd" size="25"></td></tr>
+<tr><td colspan="2" class="ttl"><input type="submit" value="'.$loc_loginform_input.'"></td></tr><table></FORM>
 <Br>'.$index_tech_support.'</div><Br><Br></body></html>';
 die; }
 if (SHA1($cook_date.$additional_key.'CHECK_1st_LOGIN') == base64_decode($_COOKIE['ox_subkey1'].'==')) { add_stat('u', 'SYSTEM', 'User ['.$user_info['login'].'] logged IN succesfully');
@@ -181,14 +155,6 @@ for ($i = 0; $i <= 5; $i++) {if ($logics_vals[$i] == $cu_logic) {$sel = ' SELECT
 $out .= '<OPTION VALUE="'.$logics_vals["$i"].'" '.$sel.'>'.$logics_name[$i]; }
 $out .= '</SELECT>'; return $out; }
 
-function TableSelector ($name, $cu_table) { $out = '';
-$tbl_name = array ('Посетители', 'Автомобили');
-$tbl_vals = array ('pos', 'avt');
-$out .= '<SELECT TYPE="text" SIZE="1" NAME="'.$name.'">' ;
-for ($i = 0; $i <= 1; $i++) {if ($tbl_vals[$i] == $cu_table) {$sel = ' SELECTED';} ELSE {$sel = '';} ;
-$out .= '<OPTION VALUE="'.$tbl_vals["$i"].'" '.$sel.'>'.$tbl_name[$i]; }
-$out .= '</SELECT>'; return $out; }
-
 function comp2hum_date ($date) { if ($date == '') { $hdate = 0; } list ($y, $m, $d) = preg_split ('/[\/.-]/', substr($date, 0, 10)); $hdate = $d.'-'.$m.'-'.$y ; if ( (int) $hdate == 0) {$hdate='';} return $hdate; }
 function comp2hum_time ($time) { if ($time == '') { $htime = 0; } list ($h, $m, $s) = preg_split ('/[:\/.-]/', substr($time, 0, 8)); $htime = $h.':'.$m; if ( (int) $htime == 0) {$htime='';} return $htime; }
 
@@ -208,23 +174,23 @@ if ( isset($_POST["prnt_button"]) || ( isset($_GET["prnt"]) && $_GET["prnt"] == 
 
 
 if ($prnt != '1') {
-     $print_link = '<INPUT type="checkbox" class="btn" name="prnt_button" title="Если эта опция установлена, документ будет подготовлен к печати">'.$index_print_checkbox.' '; }
+     $print_link = '<INPUT type="checkbox" class="btn" name="prnt_button" title="'.$loc_print_checkbox_hint.'">'.$index_print_checkbox.' '; }
      ELSE { $print_link = ''; };
 
 if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { $title_text = $admin_page_title; } ELSE { $title_text = $index_page_title; };
 print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><title>'.$user_info["login"].'@['.htmlspecialchars($title_text, ENT_QUOTES).'] :: ['.$user_info["is_root"].$user_info["is_administrator"].$user_info["is_guard"].']</title><link href="favicon.ico" rel="shortcut icon"><meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<html><head><title>'.$user_info["login"].'@['.htmlspecialchars($title_text, ENT_QUOTES).'] :: ['.$user_info["is_root"].$user_info["is_administrator"].$user_info["is_guard"].']</title><link href="favicon.ico" rel="shortcut icon"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Expires" Content="Mon, 12 Feb 2003 00:00:01 GMT"><meta http-equiv="pragma" content="no-cache"><meta http-equiv="cache-control" content="no-cache"></head><body>';
 IF ( $prnt != '1' ) {print '<LINK REL="STYLESHEET" TYPE="text/css" HREF="main.css">' ; } ELSE {print '<LINK REL="STYLESHEET" TYPE="text/css" HREF="main_prn.css">'; } ;
-  if ($user_info["is_root"] == 1) { $opers_lnk = '<a href="?ops=opers">Логины</a><Br>'; } ELSE { $opers_lnk = ''; };
-  if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { if ($ops == 'twk') { $top_twk_lnk = '<td width="40%" class="actd"> НАСТРОЙКИ '.$opers_lnk.'</td>'; } ELSE { $top_twk_lnk = '<td width="30%" class="inactd"> <a href="?ops=twk">НАСТРОЙКИ</a> '.$opers_lnk.'</td>'; }; } ELSE { $top_twk_lnk = ''; };
-  if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { if ($ops == 'posm') { $top_posm_lnk = '<td width="40%" class="actd"> Мониторинг посетителей </td>'; } ELSE { $top_posm_lnk = '<td width="30%" class="inactd"> <a href="?ops=posm">Мониторинг посетителей</a> </td>'; }; } ELSE { $top_posm_lnk = ''; };
-  if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { if ($ops == 'avtm') { $top_avtm_lnk = '<td width="40%" class="actd"> Мониторинг автомобилей </td>'; } ELSE { $top_avtm_lnk = '<td width="30%" class="inactd"> <a href="?ops=avtm">Мониторинг автомобилей</a> </td>'; }; } ELSE { $top_avtm_lnk = ''; };
-  if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR ($user_info["is_guard"] != 1 AND $user_info["is_administrator"] != 1) ) { if ($ops == 'pos') { $top_pos_lnk = '<td width="40%" class="actd"> Посетители </td>'; } ELSE { $top_pos_lnk = '<td width="30%" class="inactd"> <a href="?ops=pos">Посетители</a> </td>'; }; } ELSE { $top_pos_lnk = ''; };
-  if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR ($user_info["is_guard"] != 1 AND $user_info["is_administrator"] != 1) ) { if ($ops == 'avt') { $top_avt_lnk = '<td width="40%" class="actd"> Автомобили </td>'; } ELSE { $top_avt_lnk = '<td width="30%" class="inactd"> <a href="?ops=avt">Автомобили</a> </td>'; }; } ELSE { $top_avt_lnk = ''; };
-  if ($ops == 'ruls') { $top_ruls_lnk = '<td width="40%" class="actd"> О системе </td>'; } ELSE { $top_ruls_lnk = '<td width="30%" class="inactd"> <a href="?ops=ruls"><font class="help"> О системе </font></a> </td>'; };
-if ($ops != 'epos' AND $ops != 'eavt') { $top_menu_out = $top_pos_lnk.$top_posm_lnk.$top_avt_lnk.$top_avtm_lnk; } ELSE {$top_menu_out = '<td width="80%" colspan="2">Редактирование&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font class="comment">( запись с кодом '.$id.' )</font></td>'; }
-if ($prnt != 1) { print '<table width="99%"><tr>'.$top_menu_out.$top_ruls_lnk.$top_twk_lnk.'<td class="inactd" width="2%">&nbsp;</td><td width="1%"><a href="?ops=logout" title="Выход (Завершить сессию)" id="exitt">X</a></td></tr><tr><td colspan="8" align="center">'; }
+  if ($user_info["is_root"] == 1) { $opers_lnk = '<a href="?ops=opers">'.$loc_main_menu_logins.'</a><Br>'; } ELSE { $opers_lnk = ''; };
+  if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { if ($ops == 'twk') { $top_twk_lnk = '<td width="40%" class="actd"> '.$loc_main_menu_options.' '.$opers_lnk.'</td>'; } ELSE { $top_twk_lnk = '<td width="30%" class="inactd"> <a href="?ops=twk">'.$loc_main_menu_options.'</a> '.$opers_lnk.'</td>'; }; } ELSE { $top_twk_lnk = ''; };
+  if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { if ($ops == 'posm') { $top_posm_lnk = '<td width="40%" class="actd"> '.$loc_main_menu_visitors_list.' </td>'; } ELSE { $top_posm_lnk = '<td width="30%" class="inactd"> <a href="?ops=posm">'.$loc_main_menu_visitors_list.'</a> </td>'; }; } ELSE { $top_posm_lnk = ''; };
+  if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { if ($ops == 'avtm') { $top_avtm_lnk = '<td width="40%" class="actd"> '.$loc_main_menu_cars_list.' </td>'; } ELSE { $top_avtm_lnk = '<td width="30%" class="inactd"> <a href="?ops=avtm">'.$loc_main_menu_cars_list.'</a> </td>'; }; } ELSE { $top_avtm_lnk = ''; };
+  if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR ($user_info["is_guard"] != 1 AND $user_info["is_administrator"] != 1) ) { if ($ops == 'pos') { $top_pos_lnk = '<td width="40%" class="actd"> '.$loc_main_menu_visitors.' </td>'; } ELSE { $top_pos_lnk = '<td width="30%" class="inactd"> <a href="?ops=pos">'.$loc_main_menu_visitors.'</a> </td>'; }; } ELSE { $top_pos_lnk = ''; };
+  if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR ($user_info["is_guard"] != 1 AND $user_info["is_administrator"] != 1) ) { if ($ops == 'avt') { $top_avt_lnk = '<td width="40%" class="actd"> '.$loc_main_menu_cars.' </td>'; } ELSE { $top_avt_lnk = '<td width="30%" class="inactd"> <a href="?ops=avt">'.$loc_main_menu_cars.'</a> </td>'; }; } ELSE { $top_avt_lnk = ''; };
+  if ($ops == 'ruls') { $top_ruls_lnk = '<td width="40%" class="actd"> '.$loc_main_menu_about.' </td>'; } ELSE { $top_ruls_lnk = '<td width="30%" class="inactd"> <a href="?ops=ruls"><font class="help"> '.$loc_main_menu_about.' </font></a> </td>'; };
+if ($ops != 'epos' AND $ops != 'eavt') { $top_menu_out = $top_pos_lnk.$top_posm_lnk.$top_avt_lnk.$top_avtm_lnk; } ELSE {$top_menu_out = '<td width="80%" colspan="2">'.$loc_edit_editing_title.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font class="comment">( '.$loc_edit_editing_title_hint.' '.$id.' )</font></td>'; }
+if ($prnt != 1) { print '<table width="99%"><tr>'.$top_menu_out.$top_ruls_lnk.$top_twk_lnk.'<td class="inactd" width="2%">&nbsp;</td><td width="1%"><a href="?ops=logout" title="'.$loc_main_menu_logout_hint.'" id="exitt">X</a></td></tr><tr><td colspan="8" align="center">'; }
 $index_cancel_button = '<a href="?ops='.$ops.'"><INPUT type="button" value="'.$index_cancel_button.'" class="btn"></a>';
 
    /* Защита от пустого пароля */
@@ -233,13 +199,13 @@ if ($user_info['passwd'] == $null_sha1) { $ops = 'newpwd'; }
 switch ($ops) {   /* START FUNCTIONS MEGA-WITCH */
 
 case 'newpwd' : {   /* Сброс своего пароля */
-print '<table width="70%"><tr><td class="noborder" colspan="3"><h2>Изменение своего пароля</h2></td></tr>';
+print '<table width="70%"><tr><td class="noborder" colspan="3"><h2>'.$loc_login_change_password_header.'</h2></td></tr>';
 if ( $user_info["is_root"] == 1 OR $user_info["passwd"] == $null_sha1 OR $index_show_reset_pwd == 1) {
 $send_st = isset($_POST["send_st"]) ? $_POST["send_st"] : '';
 $old_pass = isset($_POST["old_pass"]) ? sha1($_POST["old_pass"]) : $null_sha1;
 $new_pass = isset($_POST["new_pass"]) ? sha1($_POST["new_pass"]) : $null_sha1;
 $new_pass2 = isset($_POST["new_pass2"]) ? sha1($_POST["new_pass2"]) : $null_sha1;
-$cancel_button_main = '<a href="?"><INPUT type="button" value="Выход" OnClick="location.href=\'?\';"></a>';
+$cancel_button_main = '<a href="?"><INPUT type="button" value="'.$loc_login_change_password_exit_button.'" OnClick="location.href=\'?\';"></a>';
 if ($send_st == 1) { /* Обработчик */
 $pass_correct = 0;
 if ($old_pass != $user_info["passwd"]) { print '<tr><td class="noborder" colspan="3"><font class="b">Старый пароль введен неверно.</font></td></tr>'; $pass_correct++; }
@@ -255,13 +221,13 @@ if (mysqli_error($sql) != '') { print '<tr><td class="noborder" colspan="3"><fon
    } ELSE { print '<tr><td class="noborder" colspan="3"><a href="?ops=newpwd"><INPUT type="button" value="Попробовать еще раз" OnClick="location.href=\'?ops=newpwd\';"></a></td></tr>'; };
   print '<tr><td class="noborder" colspan="3"><Br>'.$cancel_button_main.'<Br><Br></td></tr>';
 } ELSE { /* Форма */
-if ($user_info["passwd"] == $null_sha1) { $old_passwd_out = '<td colspan="2" class="noborder"></td>'; } ELSE { $old_passwd_out = '<td class="noborder">Старый пароль</td><td class="noborder"><INPUT type="password" name="old_pass"></td>'; };
+if ($user_info["passwd"] == $null_sha1) { $old_passwd_out = '<td colspan="2" class="noborder"></td>'; } ELSE { $old_passwd_out = '<td class="noborder">'.$loc_login_change_password_you_current_password.'</td><td class="noborder"><INPUT type="password" name="old_pass"></td>'; };
 print '<form method="POST">
-<tr><td class="noborder">Ваш логин :</td><td class="noborder"><INPUT type="text" class="b1" value="'.htmlspecialchars($user_info["login"], ENT_QUOTES).'" readonly></td><td class="noborder"></td></tr>
-<tr>'.$old_passwd_out.'<td class="noborder" rowspan="2"><INPUT type="submit" value="Изменить пароль"></td></tr>
+<tr><td class="noborder">'.$loc_login_change_password_you_login.'</td><td class="noborder"><INPUT type="text" class="b1" value="'.htmlspecialchars($user_info["login"], ENT_QUOTES).'" readonly></td><td class="noborder"></td></tr>
+<tr>'.$old_passwd_out.'<td class="noborder" rowspan="2"><INPUT type="submit" value="'.$loc_login_change_password_submit_button.'"></td></tr>
 <tr><td class="noborder" colspan="2"><Br><INPUT type="hidden" name="send_st" value="1"></td></tr>
-<tr><td class="noborder">Новый пароль <a href="new_passwords.php" target="_blank">?</a></td><td class="noborder"><INPUT type="password" name="new_pass"></td><td class="noborder" rowspan="2">'.$cancel_button_main.'</td></tr>
-<tr><td class="noborder">Подтверждение</td><td class="noborder"><INPUT type="password" name="new_pass2"></td></tr>
+<tr><td class="noborder">'.$loc_login_change_password_you_new_password.' <a href="new_passwords.php" target="_blank">?</a></td><td class="noborder"><INPUT type="password" name="new_pass"></td><td class="noborder" rowspan="2">'.$cancel_button_main.'</td></tr>
+<tr><td class="noborder">'.$loc_login_change_password_you_new_password2.'</td><td class="noborder"><INPUT type="password" name="new_pass2"></td></tr>
 <tr><td class="noborder" colspan="3"><Br></td></tr></form>';   };
 } ELSE { print "<tr><td class=\"noborder\" colspan=\"3\">Не достаточно прав доступа - невозможно изменить свой пароль.<Br><Br></td></tr><tr><td class=\"noborder\" colspan=\"3\">$cancel_button_main</td></tr>"; };
 print '</table>';
@@ -292,25 +258,25 @@ if ( $f_hid == 'yes' AND ($user_info["is_root"] == 1 OR $user_info["is_guard"] =
   if ($new_date > $curr_date AND $user_info["is_root"] != 1 AND $user_info["is_administrator"] != 1) { $status_string .= '<Br>Указана дата из будущего'; $add_permit = 'ERR'; }
   if ($new_date < $min_date_pos AND $user_info["is_root"] != 1 AND $user_info["is_administrator"] != 1) { $status_string .= '<Br>Указана слишком старая дата - вне области видимости.'; $add_permit = 'ERR'; }
   $status_string = substr($status_string, 4, 500);
-if ($status_string == '') {   /* START ПОПЫТКА ЗАПИСИ */   $status_string = 'ДОБАВЛЯЕМ ПОСЕТИТЕЛЯ ... ';
+if ($status_string == '') {   /* START ПОПЫТКА ЗАПИСИ */   $status_string = $loc_visitors_adding_visitor.' ... ';
 $test_res = mysqli_query($sql, "SELECT id FROM visits_pos WHERE `fio` = '$fio' AND `docum` = '$docum' AND `date_in` = '$new_date' AND `time_in` = '$new_time'");
-if ( mysqli_num_rows($test_res) != 0 ) { $add_permit = 'ERR'; $status_string .= '<font class="usop_alert">СБОЙ<Br>ТАКОЙ ВИЗИТ УЖЕ ЕСТЬ</font><Br>'.$index_cancel_button ; }
-   if ( $add_permit == 'OK' ) {   /* START ВСЕ ОК, ПИШЕМ ВИЗИТ В БАЗУ */   $add_permit = 'ГОТОВО';
+if ( mysqli_num_rows($test_res) != 0 ) { $add_permit = 'ERR'; $status_string .= '<font class="usop_alert">'.$loc_failure_text.'<Br>'.$loc_visitors_already_exists.'</font><Br>'.$index_cancel_button ; }
+   if ( $add_permit == 'OK' ) {   /* START ВСЕ ОК, ПИШЕМ ВИЗИТ В БАЗУ */   $add_permit = $loc_success_text;
    $ins_query = "INSERT INTO `visits_pos` ( `fio` , `operator_id`, `docum` , `date_in` , `time_in`, `date_out` , `time_out` , `propusk` , `prim`, `change_date` )
                                    VALUES ('$fio', '".$user_info['id']."', '$docum', '$new_date', '$new_time', NULL, NULL, '$propusk', '$prim', '$curr_date $curr_time' )";
-   $res_query = mysqli_query($sql, $ins_query) or $add_permit = 'СБОЙ<Br>НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql);
+   $res_query = mysqli_query($sql, $ins_query) or $add_permit = $loc_failure_text.'<Br>НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql);
    $status_string .= '<font class="usop_alert">'.$add_permit.'</font>' ;   print $status_string.'<meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=pos">'; die;
    }   /* END ВСЕ ОК, ПИШЕМ ВИЗИТ В БАЗУ  */
 }   /* END ПОПЫТКА ЗАПИСИ */    ELSE { $status_string .= '<Br>'.$index_cancel_button ; };
 }   /* END НАЛИЧИЕ НАЖАТИЯ НА КНОПКУ */
-if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1) { print '<Br><form method="post"><table><tr><td colspan="3" class="std">Фамилия И. О. <font class="usop_alert">*</font></td><td colspan="2" class="std">Документ (паспорт, удостоверение)</td></tr>
+if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1) { print '<Br><form method="post"><table><tr><td colspan="3" class="std">'.$loc_visitors_surname.'<font class="usop_alert">*</font></td><td colspan="2" class="std">'.$loc_visitors_document.'</td></tr>
 <tr><td colspan="3"><INPUT type="text" class="req" name="p_fio" size="45" maxlength="200" value="'.htmlspecialchars(stripslashes($fio), ENT_QUOTES).'"></td><td colspan="2"><INPUT type="text" name="p_docum" size="50" maxlength="200" value="'.htmlspecialchars(stripslashes($docum), ENT_QUOTES).'"></td></tr>
-<tr><td colspan="5">&nbsp;</td></tr><tr><td colspan="2" class="std">Пришел</td><td class="std">Пропуск</td><td class="std">К кому (примечание)</td><td rowspan="2" class="btntd"><INPUT type="hidden" name="f_hid" value="yes"><INPUT type="checkbox" class="btn" name="f_confirm"> '.htmlspecialchars($index_add_pos_confm, ENT_QUOTES).'<Br><INPUT type="submit" name="f_add_pos" value="'.htmlspecialchars($index_add_pos_button, ENT_QUOTES).'" onclick="this.disabled = true; submit();" class="btn"></td></tr>
+<tr><td colspan="5">&nbsp;</td></tr><tr><td colspan="2" class="std">'.$loc_visitors_come.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.' ('.$loc_visitors_comment.')</td><td rowspan="2" class="btntd"><INPUT type="hidden" name="f_hid" value="yes"><INPUT type="checkbox" class="btn" name="f_confirm"> '.htmlspecialchars($index_add_pos_confm, ENT_QUOTES).'<Br><INPUT type="submit" name="f_add_pos" value="'.htmlspecialchars($index_add_pos_button, ENT_QUOTES).'" onclick="this.disabled = true; submit();" class="btn"></td></tr>
 <tr><td colspan="2"><NoBr>'.$cu_date_html.'&nbsp;'.$cu_time_html.'</Nobr></td><td><INPUT type="text" name="p_propusk" size="3" maxlength="20" value="'.htmlspecialchars(stripslashes($propusk), ENT_QUOTES).'"></td><td><INPUT type="text" name="p_prim" size="22" maxlength="200" value="'.htmlspecialchars(stripslashes($prim), ENT_QUOTES).'"></td></tr>';
 print '</table></form><font class="usop_alert">'.$status_string.'</font><hr>'; }
 if ($add_permit == 'OK') { $new_date = '--'; print '<table>';
 $res = mysqli_query ($sql, "SELECT * FROM visits_pos WHERE `date_in` <= '$curr_date' AND `date_in` >= '$min_date_pos' ORDER BY `date_in` DESC, ISNULL(date_out) DESC, time_in DESC, fio") ;
-if (mysqli_num_rows($res) != 0) { print '<tr><td class="std">Пришел</td><td class="std">ФИО</td><td class="std">Документ</td><td class="std">Пропуск</td><td class="std">К кому</td><td class="std">Ушел</td></tr>'; }
+if (mysqli_num_rows($res) != 0) { print '<tr><td class="std">'.$loc_visitors_come.'</td><td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.'</td><td class="std">'.$loc_visitors_gone.'</td></tr>'; }
    while ($lvs_row = mysqli_fetch_array($res)) {
    if ($lvs_row["date_in"] != $new_date) { $new_date = $lvs_row["date_in"]; print '<tr><td colspan="6" class="usop_alert">[ '.comp2hum_date($lvs_row["date_in"]).' ]</td></tr>'; }
    if (($lvs_row["date_out"] == '' AND $lvs_row["time_out"] == '') OR ($lvs_row["date_out"] == '0000-00-00' AND $lvs_row["time_out"] == '00:00:00')) { if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR $user_info["is_administrator"] == 1) { $cu_edit_lnk = '<td><a href="?ops=epos&amp;id='.$lvs_row["id"].'"><font class="comment">'.htmlspecialchars($index_pos_edit_text, ENT_QUOTES).'</font></a></td>'; } ELSE { $cu_edit_lnk = '<td></td>'; }; } ELSE { $cu_edit_lnk = '<td class="sml"><NoBr>'.comp2hum_date($lvs_row["date_out"]).'&nbsp;'.$lvs_row["time_out"].'</NoBr></td>'; };
@@ -347,25 +313,25 @@ if ( $a_hid == 'yes' AND ($user_info["is_root"] == 1 OR $user_info["is_guard"] =
   if ($new_date > $curr_date AND $user_info["is_root"] != 1 AND $user_info["is_administrator"] != 1) { $status_string .= '<Br>Указана дата из будущего'; $add_permit = 'ERR'; }
   if ($new_date < $min_date_avt AND $user_info["is_root"] != 1 AND $user_info["is_administrator"] != 1) { $status_string .= '<Br>Указана слишком старая дата - вне области видимости.'; $add_permit = 'ERR'; }
 $status_string = substr($status_string, 4, 500);
-if ($status_string == '') {   /* START ПОПЫТКА ЗАПИСИ */   $status_string = 'ДОБАВЛЯЕМ АВТОМОБИЛЬ ... ';
+if ($status_string == '') {   /* START ПОПЫТКА ЗАПИСИ */   $status_string = $loc_cars_adding_car.' ... ';
 $test_res = mysqli_query($sql, "SELECT id FROM visits_avt WHERE `fio` = '$fio' AND `car` = '$car' AND `docum` = '$docum' AND `date_in` = '$new_date' AND `time_in` = '$new_time'");
-if ( mysqli_num_rows($test_res) != 0 ) { $add_permit = 'ERR'; $status_string .= '<font class="usop_alert">СБОЙ<Br>ТАКОЙ АВТОМОБИЛЬ УЖЕ ЕСТЬ</font><Br>'.$index_cancel_button ; }
-   if ( $add_permit == 'OK' ) {   /* START ВСЕ ОК, ПИШЕМ ВИЗИТ В БАЗУ */   $add_permit = 'ГОТОВО';
+if ( mysqli_num_rows($test_res) != 0 ) { $add_permit = 'ERR'; $status_string .= '<font class="usop_alert">'.$loc_failure_text.'<Br>'.$loc_cars_already_exists.'</font><Br>'.$index_cancel_button ; }
+   if ( $add_permit == 'OK' ) {   /* START ВСЕ ОК, ПИШЕМ ВИЗИТ В БАЗУ */   $add_permit = $loc_success_text;
    $ins_query = "INSERT INTO `visits_avt` ( `fio` , `operator_id`, `car` , `docum` , `date_in` , `time_in`, `date_out` , `time_out` , `propusk` , `prim`, `change_date` )
                                    VALUES ('$fio', '".$user_info['id']."', '$car', '$docum', '$new_date', '$new_time', NULL, NULL, '$propusk', '$prim', '$curr_date $curr_time' )";
-   $res_query = mysqli_query($sql, $ins_query) or $add_permit = 'СБОЙ<Br>НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql);
+   $res_query = mysqli_query($sql, $ins_query) or $add_permit = $loc_failure_text.'<Br>НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql);
    $status_string .= '<font class="usop_alert">'.$add_permit.'</font>' ;   print $status_string.'<meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=avt">'; die;
    }   /* END ВСЕ ОК, ПИШЕМ ВИЗИТ В БАЗУ  */
 }   /* END ПОПЫТКА ЗАПИСИ */    ELSE { $status_string .= '<Br>'.$index_cancel_button ; };
 }   /* END НАЛИЧИЕ НАЖАТИЯ НА КНОПКУ */
-if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1) { print '<Br><form method="post"><table><tr><td colspan="2" class="std">Фамилия И. О. <font class="usop_alert">*</font></td><td class="std">Машина (№) <font class="usop_alert">*</font></td><td colspan="2" class="std">Документ (паспорт, удостоверение)</td></tr>
+if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1) { print '<Br><form method="post"><table><tr><td colspan="2" class="std">'.$loc_visitors_surname.'<font class="usop_alert">*</font></td><td class="std">'.$loc_cars_carnumber.' <font class="usop_alert">*</font></td><td colspan="2" class="std">'.$loc_visitors_document.'</td></tr>
 <tr><td colspan="2"><INPUT type="text" class="req" name="a_fio" size="27" maxlength="200" value="'.htmlspecialchars(stripslashes($fio), ENT_QUOTES).'"></td><td><INPUT type="text" class="req" name="a_car" size="10" maxlength="50" value="'.htmlspecialchars(stripslashes($car), ENT_QUOTES).'"></td><td colspan="2"><INPUT type="text" name="a_docum" size="50" maxlength="200" value="'.htmlspecialchars(stripslashes($docum), ENT_QUOTES).'"></td></tr>
-<tr><td colspan="5">&nbsp;</td></tr><tr><td colspan="2" class="std">Приехал</td><td class="std">Пропуск</td><td class="std">К кому (примечание)</td><td rowspan="2" class="btntd"><INPUT type="hidden" name="a_hid" value="yes"><INPUT type="checkbox" class="btn" name="a_confirm"> '.htmlspecialchars($index_add_avt_confm, ENT_QUOTES).'<Br><INPUT type="submit" name="f_add_avt" value="'.htmlspecialchars($index_add_avt_button, ENT_QUOTES).'" onclick="this.disabled = true; submit();" class="btn"></td></tr>
+<tr><td colspan="5">&nbsp;</td></tr><tr><td colspan="2" class="std">'.$loc_cars_arrived.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.' ('.$loc_visitors_comment.')</td><td rowspan="2" class="btntd"><INPUT type="hidden" name="a_hid" value="yes"><INPUT type="checkbox" class="btn" name="a_confirm"> '.htmlspecialchars($index_add_avt_confm, ENT_QUOTES).'<Br><INPUT type="submit" name="f_add_avt" value="'.htmlspecialchars($index_add_avt_button, ENT_QUOTES).'" onclick="this.disabled = true; submit();" class="btn"></td></tr>
 <tr><td colspan="2">'.$cu_date_html.'&nbsp;'.$cu_time_html.'</td><td><INPUT type="text" name="a_propusk" size="3" maxlength="20" value="'.htmlspecialchars(stripslashes($propusk), ENT_QUOTES).'"></td><td><INPUT type="text" name="a_prim" size="22" maxlength="200" value="'.htmlspecialchars(stripslashes($prim), ENT_QUOTES).'"></td></tr>';
 print '</table></form><font class="usop_alert">'.$status_string.'</font><hr>'; }
 if ($add_permit == 'OK') { $new_date = '--'; print '<table>';
 $res = mysqli_query ($sql, "SELECT * FROM visits_avt WHERE `date_in` <= '$curr_date' AND `date_in` >= '$min_date_avt' ORDER BY `date_in` DESC, ISNULL(date_out) DESC, time_in DESC, fio") ;
-if (mysqli_num_rows($res) != 0) { print '<tr><td class="std">Приехал</td><td class="std">ФИО</td><td class="std">Машина (№)</td><td class="std">Документ</td><td class="std">Пропуск</td><td class="std">К кому</td><td class="std">Выехал</td></tr>'; }
+if (mysqli_num_rows($res) != 0) { print '<tr><td class="std">'.$loc_cars_arrived.'</td><td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_cars_carnumber.'</td><td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.'</td><td class="std">'.$loc_cars_gone.'</td></tr>'; }
    while ($lvs_row = mysqli_fetch_array($res)) {
    if ($lvs_row["date_in"] != $new_date) { $new_date = $lvs_row["date_in"]; print '<tr><td colspan="7" class="usop_alert">[ '.comp2hum_date($lvs_row["date_in"]).' ]</td></tr>'; }
    if (($lvs_row["date_out"] == '' AND $lvs_row["time_out"] == '') OR ($lvs_row["date_out"] == '0000-00-00' AND $lvs_row["time_out"] == '00:00:00')) { if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR $user_info["is_administrator"] == 1) { $cu_edit_lnk = '<td><a href="?ops=eavt&amp;id='.$lvs_row["id"].'"><font class="comment">'.htmlspecialchars($index_avt_edit_text, ENT_QUOTES).'</font></a></td>'; } ELSE { $cu_edit_lnk = '<td></td>'; }; } ELSE { $cu_edit_lnk = '<td class="sml"><NoBr>'.comp2hum_date($lvs_row["date_out"]).'&nbsp;'.$lvs_row["time_out"].'</NoBr></td>'; };
@@ -395,15 +361,15 @@ $data_ready = ''; if ($act != '' AND $edit_permit != 'OK') { $act = 'none'; }
 if (chk_date($f_date) != 1 AND $user_info["is_root"] == 1) { $f_date = $row["date_out"]; $curr_time = $row["time_out"]; }
   if ($index_date_edit == 1 OR $user_info["is_administrator"] == 1 OR $user_info["is_root"] == 1) { $cu_date_html = DateSelector("f_date", $f_date); } ELSE { $cu_date_html = comp2hum_date($curr_date); };
   if ($index_time_edit == 1 OR $user_info["is_administrator"] == 1 OR $user_info["is_root"] == 1) { $cu_time_html = TimeSelector("f_time", $curr_time); } ELSE { $cu_time_html = comp2hum_time($curr_time); };
-if ($act == 'none') { print 'БЫЛА ВЫБРАНА ОТМЕНА - ВЫПОЛНЯЮ ...<meta HTTP-EQUIV="Refresh" CONTENT="'.$index_cancel_delay.'; URL=?ops=posm">'; die;}
-if ($allow_edit_data == 1 AND ($act == 'set_out_time' OR $act == 'edit_data') ) {   /* START РЕДАКТИРОВАНИЕ ПОЛЕЙ */ $res_status = 'ГОТОВО';
+if ($act == 'none') { print 'БЫЛА ВЫБРАНА ОТМЕНА - '.$loc_processing_text.' ...<meta HTTP-EQUIV="Refresh" CONTENT="'.$index_cancel_delay.'; URL=?ops=posm">'; die;}
+if ($allow_edit_data == 1 AND ($act == 'set_out_time' OR $act == 'edit_data') ) {   /* START РЕДАКТИРОВАНИЕ ПОЛЕЙ */ $res_status = $loc_success_text;
    if ($user_info["is_root"] == 1) {
       $ddi = isset($_POST["f_date_in_day"]) ? $_POST["f_date_in_day"] : ''; $dmi = isset($_POST["f_date_in_month"]) ? $_POST["f_date_in_month"] : ''; $dyi = isset($_POST["f_date_in_year"]) ? $_POST["f_date_in_year"] : '';
       $f_date_in = substr ( addslashes( sprintf("%04d-%02d-%02d", $dyi, $dmi, $ddi) ), 0, 10 ) ;
       $thi = isset($_POST["f_time_in_hour"]) ? $_POST["f_time_in_hour"] : ''; $tmi = isset($_POST["f_time_in_minute"]) ? $_POST["f_time_in_minute"] : '';
       $f_time_in = substr ( addslashes($thi.':'.$tmi.':00'), 0, 8 ) ; $upd_time_in_sql = ", `date_in` = '$f_date_in', `time_in` = '$f_time_in' "; } ELSE { $upd_time_in_sql = ''; };
-   mysqli_query ($sql, "UPDATE `visits_pos` SET `fio` = '".$fio."', `docum` = '".$docum."', `propusk` = '".$propusk."', `prim` = '".$prim."', `date_out` = NULL, `time_out` = NULL $upd_time_in_sql WHERE `id` = '$id' LIMIT 1") or $res_status = 'СБОЙ ОБНОВЛЕНИЯ ДАННЫХ !!';
-   if ($act == 'edit_data') { print 'БЫЛО ВЫБРАНО РЕДАКТИРОВАНИЕ ВИЗИТА БЕЗ ЗАВЕРШЕНИЯ - ВЫПОЛНЯЮ ... <font class="usop_alert">'.$res_status.'</font><meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=posm">'; die; }
+   mysqli_query ($sql, "UPDATE `visits_pos` SET `fio` = '".$fio."', `docum` = '".$docum."', `propusk` = '".$propusk."', `prim` = '".$prim."', `date_out` = NULL, `time_out` = NULL $upd_time_in_sql WHERE `id` = '$id' LIMIT 1") or $res_status = $loc_failure_text;
+   if ($act == 'edit_data') { print 'БЫЛО ВЫБРАНО РЕДАКТИРОВАНИЕ ВИЗИТА БЕЗ ЗАВЕРШЕНИЯ - '.$loc_processing_text.' ... <font class="usop_alert">'.$res_status.'</font><meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=posm">'; die; }
    }   /* END РЕДАКТИРОВАНИЕ ПОЛЕЙ */
 if (isset($act) AND $act == 'set_out_time') {   /* START COMMIT */   $data_ready = 'OK';
    if ($index_date_edit == 1 OR $user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { $new_date = $f_date; } ELSE { $new_date = $curr_date; };   if ($index_time_edit == 1 OR $user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { $new_time = $f_time; } ELSE { $new_time = $curr_time; };
@@ -415,20 +381,20 @@ if ($data_ready != 'OK') { print '<Br><font class="usop_alert">Ошибка :'.s
 ELSE {   /* START ВСЕ ВЕРНО, ПИШЕМ В БАЗУ */
       $cupos_res = mysqli_query ($sql, "SELECT * FROM visits_pos WHERE `id` = '$id' LIMIT 1") ; $cupos_num = mysqli_num_rows ($cupos_res); $row = mysqli_fetch_array($cupos_res);   if (($row["date_out"] != '' OR $row["time_out"] != '') AND ($row["date_out"] != '0000-00-00' OR $row["time_out"] != '00:00:00') AND $user_info["is_root"] != 1) { $data_ready = 'НЕДОПУСТИМО ОБНОВЛЕНИЕ ЗАКРЫТОГО ВИЗИТА !!'; }
    $upd_query = "UPDATE `visits_pos` SET `date_out` = '$new_date', `time_out` = '$new_time', `change_date` = '$curr_date $curr_time' WHERE `id` = '$id' LIMIT 1";
-   if ( $data_ready == 'OK' ) { $res_status = 'ГОТОВО'; $upd_res = mysqli_query($sql, $upd_query) or $res_status = 'СБОЙ<Br>НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql); } ELSE { $res_status = 'СБОЙ ЗАПРОСА<Br>'.$data_ready; };
-   print 'БЫЛО ВЫБРАНО ЗАВЕРШЕНИЕ ВИЗИТА - ВЫПОЛНЯЮ ... <font class="usop_alert">'.$res_status.'</font><meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=posm">';
+   if ( $data_ready == 'OK' ) { $res_status = $loc_success_text; $upd_res = mysqli_query($sql, $upd_query) or $res_status = $loc_failure_text.'<Br>НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql); } ELSE { $res_status = $loc_failure_text.' ЗАПРОСА<Br>'.$data_ready; };
+   print 'БЫЛО ВЫБРАНО ЗАВЕРШЕНИЕ ВИЗИТА - '.$loc_processing_text.' ... <font class="usop_alert">'.$res_status.'</font><meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=posm">';
    die;   }   /* END ВСЕ ВЕРНО, ПИШЕМ В БАЗУ */
 };   /* END COMMIT */
 print '<form method="post">';
 if ($edit_permit != 'OK') { print '<Br><font class="btntd"><INPUT type="radio" name="act" value="none" checked></font> <font class="usop_alert">'.$edit_permit.'</font></label>'; } ELSE {
-print  '<Br>Вы редактируете запись для этого посетителя :<Br><Br><table><tr><td class="std">Пришел</td><td class="std">ФИО</td><td class="std">Документ</td><td class="std">Пропуск</td><td class="std">К кому</td></tr>';
+print  '<Br>'.$loc_edit_editing_visitor_header1.' :<Br><Br><table><tr><td class="std">'.$loc_visitors_come.'</td><td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.'</td></tr>';
 if ($user_info["is_root"] == 1) { $date_in_html = DateSelector("f_date_in", $row["date_in"]).'&nbsp;&nbsp;&nbsp;'.TimeSelector("f_time_in", $row["time_in"]); $disable_edit_label = ''; } ELSE { $date_in_html = comp2hum_date($row["date_in"]).'&nbsp;&nbsp;&nbsp;'.$row["time_in"]; $disable_edit_label = '<Br><font class="usop_alert"><label for="set_pos_time_id">Все изменения будут внесены, после чего запись будет закрыта для редактирования.</label></font>'; };
 if ($allow_edit_data == 1) { print '<tr><td class="sml">'.$date_in_html.'</td><td class="sml"><input type="text" name="f_fio" size="20" value="'.htmlspecialchars($row["fio"], ENT_QUOTES).'"></td><td class="sml"><input type="text" name="f_docum" size="5" value="'.htmlspecialchars($row["docum"], ENT_QUOTES).'"></td><td class="sml"><input type="text" name="f_propusk" size="5" value="'.htmlspecialchars($row["propusk"], ENT_QUOTES).'"></td><td class="sml"><input type="text" name="f_prim" size="5" value="'.htmlspecialchars($row["prim"], ENT_QUOTES).'"></td></tr>'; }
    ELSE { print '<tr><td class="sml">'.$date_in_html.'</td><td class="sml">'.htmlspecialchars($row["fio"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($row["docum"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($row["propusk"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($row["prim"], ENT_QUOTES).'</td></tr>'; }
-print '<tr><td colspan="5"><Br>Допустимы следующие действия :</td></tr>
-<tr><td colspan="5" align="left" class="btntd"><INPUT type="radio" name="act" value="set_out_time" id="set_pos_time_id"><label for="set_pos_time_id"> Назначить время ухода равное&nbsp;&nbsp;&nbsp;</label>[ '.$cu_date_html.' ]&nbsp;&nbsp;&nbsp;( '.$cu_time_html.' ).'.$disable_edit_label.'</td></tr>';
-if ($allow_edit_data == 1) { print '<tr><td colspan="5" align="left" class="btntd"><INPUT type="radio" name="act" value="edit_data" id="edit_data_id"><label for="edit_data_id"> Внести изменения в данные, разблокировать визит.</label></td></tr>'; }
-print '<tr><td colspan="5" align="left" class="btntd"><INPUT type="radio" name="act" value="none" checked id="set_pos_none_id"><label for="set_pos_none_id"> Ничего не делать и выйти</label></td></tr></table>';   };
+print '<tr><td colspan="5"><Br>'.$loc_edit_accessible_actions.' :</td></tr>
+<tr><td colspan="5" align="left" class="btntd"><INPUT type="radio" name="act" value="set_out_time" id="set_pos_time_id"><label for="set_pos_time_id"> '.$loc_edit_action1_assign_visitor_gone_time.'&nbsp;&nbsp;&nbsp;</label>[ '.$cu_date_html.' ]&nbsp;&nbsp;&nbsp;( '.$cu_time_html.' ).'.$disable_edit_label.'</td></tr>';
+if ($allow_edit_data == 1) { print '<tr><td colspan="5" align="left" class="btntd"><INPUT type="radio" name="act" value="edit_data" id="edit_data_id"><label for="edit_data_id"> '.$loc_edit_action2_change_record_or_unlock.'</label></td></tr>'; }
+print '<tr><td colspan="5" align="left" class="btntd"><INPUT type="radio" name="act" value="none" checked id="set_pos_none_id"><label for="set_pos_none_id"> '.$loc_edit_action3_do_nothing.'</label></td></tr></table>';   };
 print '<Br><Br><INPUT type="submit" class="btn" value="'.htmlspecialchars($index_confirm_button, ENT_QUOTES).'" onclick="this.disabled = true; submit();"><Br><Br></form>';
 }
 break; }   /* END ПОСЕТИТЕЛИ - EDIT  */
@@ -456,15 +422,15 @@ $data_ready = ''; if (isset($act) AND $edit_permit != 'OK') { $act = 'none'; }
 if (chk_date($f_date) != 1 AND $user_info["is_root"] == 1) { $f_date = $row["date_out"]; $curr_time = $row["time_out"]; }
   if ($index_date_edit == 1 OR $user_info["is_administrator"] == 1 OR $user_info["is_root"] == 1) { $cu_date_html = DateSelector("f_date", $f_date); } ELSE { $cu_date_html = comp2hum_date($curr_date); };
   if ($index_time_edit == 1 OR $user_info["is_administrator"] == 1 OR $user_info["is_root"] == 1) { $cu_time_html = TimeSelector("f_time", $curr_time); } ELSE { $cu_time_html = comp2hum_time($curr_time); };
-if ($act == 'none') { print 'БЫЛА ВЫБРАНА ОТМЕНА - ВЫПОЛНЯЮ ...<meta HTTP-EQUIV="Refresh" CONTENT="'.$index_cancel_delay.'; URL=?ops=avt">'; die;}
-if ($act != '' AND $allow_edit_data == 1 AND ($act == 'set_out_time' OR $act == 'edit_data') ) {   /* START РЕДАКТИРОВАНИЕ ПОЛЕЙ */  $res_status = 'ГОТОВО';
+if ($act == 'none') { print 'БЫЛА ВЫБРАНА ОТМЕНА - '.$loc_processing_text.' ...<meta HTTP-EQUIV="Refresh" CONTENT="'.$index_cancel_delay.'; URL=?ops=avt">'; die;}
+if ($act != '' AND $allow_edit_data == 1 AND ($act == 'set_out_time' OR $act == 'edit_data') ) {   /* START РЕДАКТИРОВАНИЕ ПОЛЕЙ */  $res_status = $loc_success_text;
    if ($user_info["is_root"] == 1) {
       $ddi = isset ($_POST["f_date_in_day"]) ? $_POST["f_date_in_day"] : ''; $dmi = isset ($_POST["f_date_in_month"]) ? $_POST["f_date_in_month"] : ''; $dyi = isset ($_POST["f_date_in_year"]) ? $_POST["f_date_in_year"] : '';
       $f_date_in = substr ( addslashes( sprintf("%04d-%02d-%02d", $dyi, $dmi, $ddi) ), 0, 10 ) ;
       $thi = isset ($_POST["f_time_in_hour"]) ? $_POST["f_time_in_hour"] : ''; $tmi = isset ($_POST["f_time_in_minute"]) ? $_POST["f_time_in_minute"] : '';
       $f_time_in = substr ( addslashes($thi.':'.$tmi.':00'), 0, 8 ) ; $upd_time_in_sql = ", `date_in` = '$f_date_in', `time_in` = '$f_time_in' "; } ELSE { $upd_time_in_sql = ''; };
-   mysqli_query ($sql, "UPDATE `visits_avt` SET `fio` = '".$fio."', `car` = '".$car."', `docum` = '".$docum."', `propusk` = '".$propusk."', `prim` = '".$prim."', `date_out` = NULL, `time_out` = NULL $upd_time_in_sql WHERE `id` = '$id' LIMIT 1") or $res_status = 'СБОЙ ОБНОВЛЕНИЯ ДАННЫХ !!';
-   if ($act == 'edit_data') { print 'БЫЛО ВЫБРАНО РЕДАКТИРОВАНИЕ ВИЗИТА БЕЗ ЗАВЕРШЕНИЯ - ВЫПОЛНЯЮ ... <font class="usop_alert">'.$res_status.'</font><meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=avtm">'; die; }
+   mysqli_query ($sql, "UPDATE `visits_avt` SET `fio` = '".$fio."', `car` = '".$car."', `docum` = '".$docum."', `propusk` = '".$propusk."', `prim` = '".$prim."', `date_out` = NULL, `time_out` = NULL $upd_time_in_sql WHERE `id` = '$id' LIMIT 1") or $res_status = $loc_failure_text.' ОБНОВЛЕНИЯ ДАННЫХ !!';
+   if ($act == 'edit_data') { print 'БЫЛО ВЫБРАНО РЕДАКТИРОВАНИЕ ВИЗИТА БЕЗ ЗАВЕРШЕНИЯ - '.$loc_processing_text.' ... <font class="usop_alert">'.$res_status.'</font><meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=avtm">'; die; }
    }   /* END РЕДАКТИРОВАНИЕ ПОЛЕЙ */
 if (isset($act) AND $act == 'set_out_time') {   /* START COMMIT */   $data_ready = 'OK';
   if ($index_date_edit == 1 OR $user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { $new_date = $f_date; } ELSE { $new_date = $curr_date; };   if ($index_time_edit == 1 OR $user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { $new_time = $f_time; } ELSE { $new_time = $curr_time; };
@@ -476,72 +442,62 @@ if ($data_ready != 'OK') { print '<Br><font class="usop_alert">Ошибка : '.
 ELSE {   /* START ВСЕ ВЕРНО, ПИШЕМ В БАЗУ */
       $cupos_res = mysqli_query ($sql, "SELECT * FROM visits_avt WHERE `id` = '$id' LIMIT 1") ; $cupos_num = mysqli_num_rows ($cupos_res); $row = mysqli_fetch_array($cupos_res);   if (($row["date_out"] != '' OR $row["time_out"] != '') AND ($row["date_out"] != '0000-00-00' OR $row["time_out"] != '00:00:00') AND $user_info["is_root"] != 1) { $data_ready = 'НЕДОПУСТИМО ОБНОВЛЕНИЕ ЗАКРЫТОГО ВИЗИТА'; }
    $upd_query = "UPDATE `visits_avt` SET `date_out` = '$new_date', `time_out` = '$new_time', `change_date` = '$curr_date $curr_time' WHERE `id` = '$id' LIMIT 1";
-   if ( $data_ready == 'OK' ) { $res_status = 'ГОТОВО'; $upd_res = mysqli_query($sql, $upd_query) or $res_status = 'СБОЙ<Br>НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql); } ELSE { $res_status = 'СБОЙ ЗАПРОСА<Br>'.$data_ready; };
-   print 'БЫЛО ВЫБРАНО ЗАВЕРШЕНИЕ ВИЗИТА - ВЫПОЛНЯЮ ... <font class="usop_alert">'.$res_status.'</font><meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=avt">';
+   if ( $data_ready == 'OK' ) { $res_status = $loc_success_text; $upd_res = mysqli_query($sql, $upd_query) or $res_status = $loc_failure_text.'<Br>НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql); } ELSE { $res_status = $loc_failure_text.' ЗАПРОСА<Br>'.$data_ready; };
+   print 'БЫЛО ВЫБРАНО ЗАВЕРШЕНИЕ ВИЗИТА - '.$loc_processing_text.' ... <font class="usop_alert">'.$res_status.'</font><meta HTTP-EQUIV="Refresh" CONTENT="'.$index_action_delay.'; URL=?ops=avt">';
    die;   }   /* END ВСЕ ВЕРНО, ПИШЕМ В БАЗУ */
 };   /* END COMMIT */
 print '<form method="post">';
 if ($edit_permit != 'OK') { print '<Br><font class="btntd"><INPUT type="radio" name="act" value="none" checked></font> <font class="usop_alert">'.$edit_permit.'</font>'; } ELSE {
-print  '<Br>Вы редактируете запись для этого автомобиля :<Br><Br><table><tr><td class="std">Приехал</td><td class="std">ФИО</td><td class="std">Машина №</td><td class="std">Документ</td><td class="std">Пропуск</td><td class="std">К кому</td></tr>';
+print  '<Br>'.$loc_edit_editing_cars_header1.' :<Br><Br><table><tr><td class="std">'.$loc_cars_arrived.'</td><td class="std">'.$loc_search_surname_short.'</td><td class="std">Машина №</td><td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.'</td></tr>';
 if ($user_info["is_root"] == 1) { $date_in_html = DateSelector("f_date_in", $row["date_in"]).'&nbsp;&nbsp;&nbsp;'.TimeSelector("f_time_in", $row["time_in"]); $disable_edit_label = ''; } ELSE { $date_in_html = comp2hum_date($row["date_in"]).'&nbsp;&nbsp;&nbsp;'.$row["time_in"]; $disable_edit_label = '<Br><font class="usop_alert"><label for="set_avt_time_id">Все изменения будут внесены, после чего запись будет закрыта для редактирования.</label></font>'; };
 if ($allow_edit_data == 1) { print '<tr><td class="sml">'.$date_in_html.'</td><td class="sml"><input type="text" name="f_fio" size="20" value="'.htmlspecialchars($row["fio"], ENT_QUOTES).'"></td><td class="sml"><input type="text" name="f_car" size="15" value="'.htmlspecialchars($row["car"], ENT_QUOTES).'"></td><td class="sml"><input type="text" name="f_docum" size="5" value="'.htmlspecialchars($row["docum"], ENT_QUOTES).'"></td><td class="sml"><input type="text" name="f_propusk" size="5" value="'.htmlspecialchars($row["propusk"], ENT_QUOTES).'"></td><td class="sml"><input type="text" name="f_prim" size="5" value="'.htmlspecialchars($row["prim"], ENT_QUOTES).'"></td></tr>'; }
 ELSE { print '<tr><td class="sml">'.$date_in_html.'</td><td class="sml">'.htmlspecialchars($row["fio"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($row["car"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($row["docum"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($row["propusk"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($row["prim"], ENT_QUOTES).'</td></tr>'; };
-print '<tr><td colspan="6"><Br>Допустимы следующие действия :</td></tr><tr><td colspan="6" align="left" class="btntd"><INPUT type="radio" name="act" value="set_out_time" id="set_avt_time_id"><label for="set_avt_time_id"> Назначить время выезда равное&nbsp;&nbsp;&nbsp;</label>[ '.$cu_date_html.' ]&nbsp;&nbsp;&nbsp;( '.$cu_time_html.' )'.$disable_edit_label.'</td></tr>';
-if ($allow_edit_data == 1) { print '<tr><td colspan="6" align="left" class="btntd"><INPUT type="radio" name="act" value="edit_data" id="edit_data_id"><label for="edit_data_id"> Внести изменения в данные, разблокировать визит.</label></td></tr>'; }
-print '<tr><td colspan="6" align="left" class="btntd"><INPUT type="radio" name="act" value="none" checked id="set_avt_none_id"><label for="set_avt_none_id"> Ничего не делать и выйти</label></td></tr></table>';   };
+print '<tr><td colspan="6"><Br>'.$loc_edit_accessible_actions.' :</td></tr><tr><td colspan="6" align="left" class="btntd"><INPUT type="radio" name="act" value="set_out_time" id="set_avt_time_id"><label for="set_avt_time_id"> '.$loc_edit_action1_assign_car_gone_time.'&nbsp;&nbsp;&nbsp;</label>[ '.$cu_date_html.' ]&nbsp;&nbsp;&nbsp;( '.$cu_time_html.' )'.$disable_edit_label.'</td></tr>';
+if ($allow_edit_data == 1) { print '<tr><td colspan="6" align="left" class="btntd"><INPUT type="radio" name="act" value="edit_data" id="edit_data_id"><label for="edit_data_id"> '.$loc_edit_action2_change_record_or_unlock.'</label></td></tr>'; }
+print '<tr><td colspan="6" align="left" class="btntd"><INPUT type="radio" name="act" value="none" checked id="set_avt_none_id"><label for="set_avt_none_id"> '.$loc_edit_action3_do_nothing.'</label></td></tr></table>';   };
 print '<Br><Br><INPUT type="submit" class="btn" value="'.htmlspecialchars($index_confirm_button, ENT_QUOTES).'" onclick="this.disabled = true; submit();"><Br><Br></form>';
 }
 break; }   /* END АВТОМОБИЛИ - EDIT */
 
 case 'ruls' : {   /* START ПРАВИЛА */
 print "<h2>Правила работы с системой.</h2>";
-  if ($prnt != 1) { print '<div align="right"><a href="?ops=ruls&amp;prnt=1" target="_blank">Print</a>&nbsp;&nbsp;&nbsp;</div>'; }
-print "<div align=\"left\">Данная система позволяет вести учет пользователей и автомобилей, входящих и покидающих территорию предприятия.<Br>
-<font class=\"usop_alert\">0.</font> Для начала работы введите адрес сервера системы в браузер, и в окне с названием
-<font class=\"btntd\">Username and password</font> введите в поле <font class=\"btntd\">Username</font> свой логин, а в поле <font class=\"btntd\">Password</font> - свой пароль,
-предварительно убедившись, что сервер называется <font class=\"btntd\">OXPAHA</font>.<Br>
-<font class=\"usop_alert\">1.</font> Вкладки сверху позволяют переключаться между формами для ввода посететелей и автомобилей.
-Помните, что такое переключение очищает поля форм.<Br>
-<font class=\"usop_alert\">2.</font> Сразу перед добавлением данных нажмите на клавиатуре кнопку <font class=\"btntd\">[F5]</font>, чтобы обновить время с сервера и введите данные. (Время вводится в <font class=\"btntd\">24</font>-часовом формате)<Br>
-Учтите, что поля, отмеченные знаком <font class=\"usop_alert\">*</font> , являются обязательными для заполнения.<Br>
-<font class=\"usop_alert\">3.</font> Если данные введены корректно, то укажите опцию <font class=\"btntd\"><input type=\"checkbox\" class=\"btn\" checked disabled>$index_add_pos_confm</font> (или <font class=\"btntd\"><input type=\"checkbox\"  class=\"btn\" checked disabled>$index_add_avt_confm</font>)
-и нажмите кнопку <INPUT type=\"button\" class=\"btn\" value=\"$index_add_pos_button\" disabled> (или <INPUT type=\"button\" class=\"btn\" value=\"$index_add_avt_button\" disabled>) ровно ОДИН раз.<Br>
-<font class=\"usop_alert\">4.</font> Если все сделано правильно, то в списке снизу появится строка с вашими данными.<Br>
-Система настроена таким образом, что данные выводятся за последние несколько дней (<font class=\"btntd\">$index_num_pos_dates</font> для посетителей / <font class=\"btntd\">$index_num_avt_dates</font> для автомобилей) по убыванию дат, причем для каждого дня сперва
-выводятся незавершенные визиты, а потом завершенные. В каждой подгруппе записи отсортированы в обратном порядке по времени входа.<Br>
-<font class=\"usop_alert\">5.</font> Со всеми вопросами обращаться сюда :<Br><font class=\"btntd\">$index_tech_support</font><hr>";
+  if ($prnt != 1) { print '<div align="right"><a href="?ops=ruls&amp;prnt=1" target="_blank">'.$loc_print_text.'</a>&nbsp;&nbsp;&nbsp;</div>'; }
+print '<div align="left">';
+echo sprintf($loc_about_detailed_help, $index_add_pos_confm, $index_add_avt_confm, $index_add_pos_button, $index_add_avt_button, $index_num_pos_dates, $index_num_avt_dates, $index_tech_support);
+print '<hr>';
+
 $add_st = $user_info["name"];
-if ($user_info["is_root"] == 1) { $add_st .= ' , <font class="btn usop_alert">root</font>'; }
-if ($user_info["is_administrator"] == 1) { $add_st .= ' , <font class="usop_alert btntd">Администратор</font>'; }
-if ($user_info["is_guard"] == 1) { $add_st .= ' , <font class="btntd">Охранник</font>'; }
-print 'Текущий пользователь : '.$user_info["login"].' ('.$add_st.')';
-if ($index_show_reset_pwd == 1) { print ' <a href="?ops=newpwd">Изменить свой пароль</a>'; }
+if ($user_info["is_root"] == 1) { $add_st .= ' , <font class="btn usop_alert">'.$loc_logins_role_root.'</font>'; }
+if ($user_info["is_administrator"] == 1) { $add_st .= ' , <font class="usop_alert btntd">'.$loc_logins_role_admin.'</font>'; }
+if ($user_info["is_guard"] == 1) { $add_st .= ' , <font class="btntd">'.$loc_logins_role_guard.'</font>'; }
+print $loc_login_current_user_text.' : '.$user_info["login"].' ('.$add_st.')';
+if ($index_show_reset_pwd == 1) { print ' <a href="?ops=newpwd">'.$loc_login_current_change_password_link.'</a>'; }
 break; }   /* END ПРАВИЛА */
 
 case 'twk' : {   /* START НАСТРОЙКИ */
 if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) {
 $twk_ready = '';   $f_hid = isset($_POST["f_hid"]) ? $_POST["f_hid"] : ''; $cx = 0;
    if ( $f_hid == 'yes' ) {   /* START НАЛИЧИЕ НАЖАТИЯ НА КНОПКУ */
-   $options_res = mysqli_query ($sql, "SELECT * FROM options") or $twk_ready .= 'Не удалось прочитать таблицу опций ;<Br>';
+   $options_res = mysqli_query ($sql, "SELECT * FROM options") or $twk_ready .= 'Table options read error ;<Br>';
 while ($row = mysqli_fetch_array($options_res)) {   /* START ПАРСИНГ ОПЦИЙ */
    $id = $row["id"]; $cu_value = isset($_POST["twk_$id"]) ? $_POST["twk_$id"] : '';
    if ( $row["type"] == 'b' ) {   if ( $cu_value == 'on' ) { $cu_value = 1 ; } ELSE { $cu_value = 0 ; };   }
    if ( $row["type"] == 'i' ) { $cu_value = (int) $cu_value ; }
 if ( $cu_value != $row["value"] ) { $cx++;   $cu_value = addslashes ($cu_value);
    $upd_query = "UPDATE options SET `value` = '$cu_value' WHERE `id` = '".$row["id"]."' LIMIT 1";
-   mysqli_query ( $sql, $upd_query ) or $twk_ready = 'СБОЙ - НЕДОСТАТОЧНО ПРАВ ДОСТУПА'.mysqli_error($sql);   }
+   mysqli_query ( $sql, $upd_query ) or $twk_ready = 'MySQL Error '.mysqli_error($sql);   }
 }   /* END ПАРСИНГ ОПЦИЙ */
-if ( $twk_ready != '' ) { print '<Br><font class="usop_alert">'.$twk_ready.'</font><Br>'; } ELSE { if ($cx != 0) { print '<Br><font class="comment">Изменения сохранены успешно.</font><Br>'; }   };
+if ( $twk_ready != '' ) { print '<Br><font class="usop_alert">'.$twk_ready.'</font><Br>'; } ELSE { if ($cx != 0) { print '<Br><font class="comment">'.$loc_options_saved_ok.'</font><Br>'; }   };
 }   /* END НАЛИЧИЕ НАЖАТИЯ НА КНОПКУ */   $twk_ready = 'OK';
 $options_res = mysqli_query ($sql, "SELECT * FROM options ORDER BY SUBSTRING(abbr, 1, 5) DESC, type, name") or $twk_ready = 'ERR';
-if ( $twk_ready != 'OK' ) { print '<font class="std">Нет таблицы настроек - редактирование невозможно</font><Br>Используйте установочный SQL-скрипт для создания таблицы и не забудьте о правах доступа.<Br>'; }
+if ( $twk_ready != 'OK' ) { print '<font class="std">NO OPTIONS TABLE</font><Br>USE SQL-script, fix access rights.<Br>'; }
 ELSE {   /* START НАСТРОЙКИ ЕСТЬ В БД */
-   if ($prnt != 1) { print '<div align="right"><a href="?ops='.$ops.'&amp;prnt=1" target="_blank">Print</a>&nbsp;&nbsp;&nbsp;</div>'; }
-print '<Br><form method="post"><table><tr><td class="std">Параметр</td><td class="std">Значение (50)</td><td class="std">Описание</td></tr>';
+   if ($prnt != 1) { print '<div align="right"><a href="?ops='.$ops.'&amp;prnt=1" target="_blank">'.$loc_print_text.'</a>&nbsp;&nbsp;&nbsp;</div>'; }
+print '<Br><form method="post"><table><tr><td class="std">'.$loc_options_parameter.'</td><td class="std">'.$loc_options_value.' (50)</td><td class="std">'.$loc_options_description.'</td></tr>';
 while ($row = mysqli_fetch_array($options_res)) {   $cu_form_type = $row["type"];
 switch ($cu_form_type) {
-      case 'b' : { if ( $row["value"] == 1 ) { $stc = ' checked'; } ELSE { $stc = ''; };   $cu_form_element = '<INPUT type="checkbox" id="twid_'.$row["id"].'" name="twk_'.$row["id"].'" class="btn" title="Поставьте галку, чтобы включить опцию"'.$stc.'>'; $cu_form_name = '<label for="twid_'.$row["id"].'"">'.$row["name"].'</label>'; break;}
-      case 'i' : { $cu_form_element = '<INPUT type="text" name="twk_'.$row["id"].'" maxlength="5"  class="req" size="5" value="'.htmlspecialchars(stripslashes($row["value"]), ENT_QUOTES).'" title="Введите числовое значение">'; $cu_form_name = $row["name"]; break;}
+      case 'b' : { if ( $row["value"] == 1 ) { $stc = ' checked'; } ELSE { $stc = ''; };   $cu_form_element = '<INPUT type="checkbox" id="twid_'.$row["id"].'" name="twk_'.$row["id"].'" class="btn" title="'.$loc_options_checkbox_hint.'"'.$stc.'>'; $cu_form_name = '<label for="twid_'.$row["id"].'"">'.$row["name"].'</label>'; break;}
+      case 'i' : { $cu_form_element = '<INPUT type="text" name="twk_'.$row["id"].'" maxlength="5"  class="req" size="5" value="'.htmlspecialchars(stripslashes($row["value"]), ENT_QUOTES).'" title="'.$loc_options_numberinput_hint.'">'; $cu_form_name = $row["name"]; break;}
       case 't' : { $cu_form_element = '<INPUT type="text" name="twk_'.$row["id"].'" maxlength="50" size="30" value="'.htmlspecialchars(stripslashes($row["value"]), ENT_QUOTES).'">'; $cu_form_name = $row["name"]; break;}     };
 print '<tr><td class="comment">'.$row["abbr"].'</td><td>'.$cu_form_element.'</td><td class="sml">'.$cu_form_name.'</td></tr>';   }
    if ($prnt != 1) { print '<tr><td colspan="3" class="btntd"><Br><INPUT type="hidden" name="f_hid" value="yes"><INPUT type="submit" value="'.$admin_save_changes.'" onclick="this.disabled = true; submit();" class="btn"><Br><Br></td></tr>'; }
@@ -584,24 +540,18 @@ $post_new_guard = isset ($_POST["new_guard"]) ? $_POST["new_guard"] : '';
    if ($_POST["op_pw1_$id"] != '' AND $_POST["op_pw1_$id"] == $_POST["op_pw2_$id"]) { $passwd_sql = ', `passwd` = \''.sha1($_POST["op_pw1_$id"]).'\''; } ELSE { $passwd_sql = ''; };
    mysqli_query ($sql, "UPDATE operators SET `login` = '$cu_login', `name` = '$cu_name', `is_root` = '$cu_root', `is_administrator` = '$cu_admin', `is_guard` = '$cu_guard', `enable` = '$cu_enable' $passwd_sql WHERE `id` = '$id'") or print mysqli_error($sql);
    }   /* END ПАРСИНГ */
-if ( $twk_ready != '' ) { print '<Br><font class="usop_alert">'.$twk_ready.'</font><Br>'; } ELSE { print '<Br><font class="comment">Изменения сохранены успешно.</font><meta HTTP-EQUIV="Refresh" CONTENT="0; URL=?ops=opers"><Br>'; };
+if ( $twk_ready != '' ) { print '<Br><font class="usop_alert">'.$twk_ready.'</font><Br>'; } ELSE { print '<Br><font class="comment">'.$loc_options_saved_ok.'</font><meta HTTP-EQUIV="Refresh" CONTENT="0; URL=?ops=opers"><Br>'; };
 $res = mysqli_query ($sql, $query) or print mysqli_error($sql);
 }   /* END НАЛИЧИЕ НАЖАТИЯ НА КНОПКУ */
    /* START ВЫВОД ОПЕРАТОРОВ ИЗ БД */
-   if ($prnt != 1) { print '<div align="right"><a href="?ops='.$ops.'&amp;prnt=1" target="_blank">Print</a>&nbsp;&nbsp;&nbsp;</div>'; }
-print '<h2>Операторы системы</h2><form method="post"><table><tr><td class="std">Логин</td><td class="std">ON</td><td class="std">Имя</td><td class="usop_alert std">root</td><td class="std">Администратор</td><td class="std">Охранник</td><td class="std">Пароль</td><td class="std">Подтверждение пароля</td><td class="usop_alert std">Удалить</td></tr>';
+   if ($prnt != 1) { print '<div align="right"><a href="?ops='.$ops.'&amp;prnt=1" target="_blank">'.$loc_print_text.'</a>&nbsp;&nbsp;&nbsp;</div>'; }
+print '<h2>'.$loc_logins_title.'</h2><form method="post"><table><tr><td class="std">'.$loc_logins_login.'</td><td class="std">'.$loc_logins_enable.'</td><td class="std">'.$loc_logins_username.'</td><td class="usop_alert std">'.$loc_logins_role_root.'</td><td class="std">'.$loc_logins_role_admin.'</td><td class="std">'.$loc_logins_role_guard.'</td><td class="std">'.$loc_logins_role_password.'</td><td class="std">'.$loc_logins_role_password2.'</td><td class="usop_alert std">'.$loc_logins_delete.'</td></tr>';
 while ($row = mysqli_fetch_array($res)) { $id_title = ' title="ID: '.$row["id"].'"';
        print '<tr><td><INPUT type="text" size="10" value="'.htmlspecialchars($row["login"],ENT_QUOTES).'" class="std comment" name="op_login_'.$row["id"].'"></td><td class="sml">'.int2checkbox($row["enable"]," name=\"op_enable_{$row["id"]}\"$id_title").'</td><td class="sml"><INPUT type="text" size="30" value="'.htmlspecialchars($row["name"],ENT_QUOTES).'" name="op_name_'.$row["id"].'"></td><td class="sml">'.int2checkbox($row["is_root"]," name=\"op_root_{$row["id"]}\" class=\"usop_alert\"").'</td><td class="sml">'.int2checkbox($row["is_administrator"]," name=\"op_admin_{$row["id"]}\" class=\"comment\"").'</td><td class="sml">'.int2checkbox($row["is_guard"]," name=\"op_guard_{$row["id"]}\"").'</td><td><INPUT type="password" size="10" name="op_pw1_'.$row["id"].'" class="std comment"></td><td><INPUT type="password" size="10" name="op_pw2_'.$row["id"].'" class="std comment"></td><td><INPUT type="checkbox" name="op_drop_'.$row["id"].'" class="usop_alert"'.$id_title.'></td></tr>'; }
-print '<tr><td colspan="9" class="sml btntd">Для добавления нового оператора обязательно введите новый логин и совпадающие неодинаковые пароли :</td></tr> <tr><td class="btntd"><INPUT type="text" size="10" name="new_login" class="std comment"></td><td class="btntd"><INPUT type="checkbox" name="new_enable"></td><td class="btntd"><INPUT type="text" size="30" placeholder="<Новый оператор>" name="new_name"></td><td class="btntd"><INPUT type="checkbox" name="new_root" class="usop_alert"></td><td class="btntd"><INPUT type="checkbox" name="new_admin" class="comment"></td><td class="btntd"><INPUT type="checkbox" name="new_guard"></td><td class="btntd"><INPUT type="password" size="10" name="new_pw1" class="std comment"></td><td class="btntd"><INPUT type="password" size="10" name="new_pw2" class="std comment"></td><td class="btntd"></td></tr>';
+print '<tr><td colspan="9" class="sml btntd">'.$loc_logins_adduser_title_hint.'</td></tr> <tr><td class="btntd"><INPUT type="text" size="10" name="new_login" class="std comment"></td><td class="btntd"><INPUT type="checkbox" name="new_enable"></td><td class="btntd"><INPUT type="text" size="30" placeholder="'.$loc_logins_new_login_hint.'" name="new_name"></td><td class="btntd"><INPUT type="checkbox" name="new_root" class="usop_alert"></td><td class="btntd"><INPUT type="checkbox" name="new_admin" class="comment"></td><td class="btntd"><INPUT type="checkbox" name="new_guard"></td><td class="btntd"><INPUT type="password" size="10" name="new_pw1" class="std comment"></td><td class="btntd"><INPUT type="password" size="10" name="new_pw2" class="std comment"></td><td class="btntd"></td></tr>';
 if ($prnt != 1) { print '<tr><td colspan="9" class="btntd"><Br><INPUT type="hidden" name="f_hid" value="yes"><INPUT type="submit" value="'.$admin_save_changes.'" onclick="this.disabled = true; submit();" class="btn"><Br><Br></td></tr>'; }
 print '</table></form><Br>
-<div class="help2">Справка :<Br>
-<li> Для добавления оператора необходимо указать логин (не совпадающий ни с одним из существующих),<Br>&nbsp;&nbsp;&nbsp;а также непустой пароль и его подтверждение.
-<li> Опция `root` - полный доступ к системе, включая управление логинами.<Br>&nbsp;&nbsp;&nbsp;Можно редактировать записи (любые) и вводить любые даты.<Br>&nbsp;&nbsp;&nbsp;(Перекрывает действие других опций)
-<li> Опция `Администратор` - просмотр данных за любой период и возможность менять настройки.<Br>&nbsp;&nbsp;&nbsp;Нельзя добавлять данные, но можно редактировать незавершенные.<Br>&nbsp;&nbsp;&nbsp;Завершенные записи редактировать нельзя. Допустим ввод любых дат.
-<li> Опция `Охранник` - добавление и правка данных, но только за последние несколько дней (из настроек).<Br>&nbsp;&nbsp;&nbsp;Может вводить даты только в пределах области видимости.
-<li> Одинаковые логины не допустимы.<Br>
-<li> Для смены пароля уже существующего оператора введите новый пароль и его подтверждение в соответствующей строке</div>';
+<div class="help2">'.$loc_logins_detailed_help.'</div>';
    /* END ВЫВОД ОПЕРАТОРОВ ИЗ БД */
 }
 break; }   /* END ОПЕРАТОРЫ */
@@ -653,13 +603,13 @@ $filts1 .= " ORDER BY date_in DESC";
 }   /* END СБОРКА ФИЛЬТРОВ */
   if ($st_out == 'on') {$st_out_html = ' checked';} ELSE {$st_out_html = '';};
   if ($st_lc == 'on') {$st_lc_html = ' checked';} ELSE {$st_lc_html = '';};
-print 'Посетители<Br><form method="POST" action="?ops='.$ops.'&amp;prnt='.$prnt.'"><table><tr><td class="btntd">Фильтры:</td><td>ФИО : <INPUT type="text" name="fio" size="30" maxlength="200" value="'.htmlspecialchars($fio, ENT_QUOTES).'"></td><td>Документ : <INPUT type="text" name="docum" size="25" maxlength="200" value="'.htmlspecialchars($docum, ENT_QUOTES).'"></td></tr>
-<tr><td>Пришел :</td><td colspan="2">'.DateSelector("din1", $din1).'-'.DateSelector("din2", $din2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;'.TimeSelector("tin1", $tin1).'-'.TimeSelector("tin2", $tin2).'</td></tr>
-<tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="Применять ли фильтр по дате ухода"> Ушел :&nbsp;&nbsp;</td><td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dlc2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;'.TimeSelector("tout1", $tout1).'-'.TimeSelector("tout2", $tout2).'</td></tr>
+print $loc_main_menu_visitors.'<Br><form method="POST" action="?ops='.$ops.'&amp;prnt='.$prnt.'"><table><tr><td class="btntd">'.$loc_search_filters.'</td><td>'.$loc_search_surname_short.' : <INPUT type="text" name="fio" size="30" maxlength="200" value="'.htmlspecialchars($fio, ENT_QUOTES).'"></td><td>'.$loc_visitors_document_short.' : <INPUT type="text" name="docum" size="25" maxlength="200" value="'.htmlspecialchars($docum, ENT_QUOTES).'"></td></tr>
+<tr><td>'.$loc_visitors_come.' :</td><td colspan="2">'.DateSelector("din1", $din1).'-'.DateSelector("din2", $din2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;'.TimeSelector("tin1", $tin1).'-'.TimeSelector("tin2", $tin2).'</td></tr>
+<tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="Применять ли фильтр по дате ухода"> '.$loc_visitors_gone.' :&nbsp;&nbsp;</td><td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dlc2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;'.TimeSelector("tout1", $tout1).'-'.TimeSelector("tout2", $tout2).'</td></tr>
 <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="Применять ли фильтр по дате последненго изменения">timestamp:</td><td>c '.DateSelector("dlc1", $dlc1).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc1", $tlc1).'</td><td>по '.DateSelector("dlc2", $dlc2).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc2", $tlc2).'</td></tr>
-<tr><td>Пропуск :</td><td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> К кому : <INPUT type="text" name="prim" size="20" maxlength="200" value="'.htmlspecialchars($prim, ENT_QUOTES).'"></td><td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">'.$print_link.'<INPUT type="submit" class="btn" onclick="this.disabled = true; submit();" value="'.$admin_apply_filters.'"> '.$admin_cancel_button.'</td></tr></table></form>' ;
+<tr><td>'.$loc_visitors_ticket.' :</td><td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> '.$loc_visitors_target.' : <INPUT type="text" name="prim" size="20" maxlength="200" value="'.htmlspecialchars($prim, ENT_QUOTES).'"></td><td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">'.$print_link.'<INPUT type="submit" class="btn" onclick="this.disabled = true; submit();" value="'.$admin_apply_filters.'"> '.$admin_cancel_button.'</td></tr></table></form>' ;
  if ($status_string != '') { print '<font class="usop_alert">'.$status_string.'</font><hr>'; }
-print '<Br><table><tr><td class="std">Пришел</td><td class="std">ФИО</td><td class="std">Документ</td><td class="std">Пропуск</td><td class="std">К кому</td><td class="std">Ушел</td><td class="std">Последнее изменение</td> <td class="std">Создал</td></tr>';
+ print '<Br><table><tr><td class="std">'.$loc_visitors_come.'</td><td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.'</td><td class="std">'.$loc_visitors_gone.'</td><td class="std">'.$loc_visitors_last_change.'</td> <td class="std">'.$loc_visitors_creator.'</td></tr>';
 $dates_res = mysqli_query ($sql, "SELECT DISTINCT date_in FROM visits_pos WHERE $filts1") ; $i = 0;
 while ($dates_row = mysqli_fetch_array($dates_res)) { $cu_datee = $dates_row["date_in"];
    $lviss_res = mysqli_query ($sql, "SELECT vp.*, op.login FROM visits_pos vp
@@ -667,7 +617,7 @@ while ($dates_row = mysqli_fetch_array($dates_res)) { $cu_datee = $dates_row["da
                                WHERE vp.`date_in` = '$cu_datee' $filts2 ORDER BY ISNULL(vp.date_out) DESC, vp.time_in DESC, vp.fio") ;
    if (mysqli_num_rows($lviss_res) != 0) { print '<tr><td colspan="7" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; }
    while ($lvs_row = mysqli_fetch_array($lviss_res)) { $i++;
-   if (($lvs_row["date_out"] == '' AND $lvs_row["time_out"] == '') OR ($lvs_row["date_out"] == '0000-00-00' AND $lvs_row["time_out"] == '00:00:00')) { if (($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR $user_info["is_administrator"] == 1) AND $prnt != 1) { $cu_edit_lnk = '<a href="?ops=epos&amp;id='.$lvs_row["id"].'"><font class="comment">'.htmlspecialchars($index_pos_edit_text, ENT_QUOTES).'</font></a>'; } ELSE { $cu_edit_lnk = ''; }; } ELSE { $cu_edit_lnk = '<NoBr>'.comp2hum_date($lvs_row["date_out"]).'&nbsp;'.$lvs_row["time_out"].'</NoBr>'; if ($user_info["is_root"] == 1 AND $prnt != 1) { $cu_edit_lnk .= ' <a href="?ops=epos&amp;id='.$lvs_row["id"].'"><font class="comment">[Редактировать]</font></a>'; } };
+   if (($lvs_row["date_out"] == '' AND $lvs_row["time_out"] == '') OR ($lvs_row["date_out"] == '0000-00-00' AND $lvs_row["time_out"] == '00:00:00')) { if (($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR $user_info["is_administrator"] == 1) AND $prnt != 1) { $cu_edit_lnk = '<a href="?ops=epos&amp;id='.$lvs_row["id"].'"><font class="comment">'.htmlspecialchars($index_pos_edit_text, ENT_QUOTES).'</font></a>'; } ELSE { $cu_edit_lnk = ''; }; } ELSE { $cu_edit_lnk = '<NoBr>'.comp2hum_date($lvs_row["date_out"]).'&nbsp;'.$lvs_row["time_out"].'</NoBr>'; if ($user_info["is_root"] == 1 AND $prnt != 1) { $cu_edit_lnk .= ' <a href="?ops=epos&amp;id='.$lvs_row["id"].'"><font class="comment">['.$loc_link_edit.']</font></a>'; } };
    print '<tr><td class="sml">'.$lvs_row["time_in"].'</td><td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td><td class="sml">'.$cu_edit_lnk.'</td><td class="sml">'.$lvs_row["change_date"].'</td><td class="sml">'.htmlspecialchars($lvs_row["login"]).'</td></tr>'; }
 }   if ($i == 0) { print '<tr><td colspan="7"><Br></td></tr><tr><td colspan="7" class="usop_alert">'.$admin_no_data.'</td></tr>'; }   print '</table><Br>';
 }
@@ -721,13 +671,13 @@ $filts1 .= " ORDER BY date_in DESC";
 }   /* END СБОРКА ФИЛЬТРОВ */
   if ($st_out == 'on') {$st_out_html = ' checked';} ELSE {$st_out_html = '';};
   if ($st_lc == 'on') {$st_lc_html = ' checked';} ELSE {$st_lc_html = '';};
-print 'Автомобили<Br><form method="POST"><table><tr><td class="btntd">Фильтры:</td><td>ФИО : <INPUT type="text" name="fio" size="30" maxlength="200" value="'.htmlspecialchars($fio, ENT_QUOTES).'"></td><td>Машина : <INPUT type="text" name="car" size="10" maxlength="50" value="'.htmlspecialchars($car, ENT_QUOTES).'"> Документ : <INPUT type="text" name="docum" size="10" maxlength="200" value="'.htmlspecialchars($docum, ENT_QUOTES).'"></td></tr>
+print $loc_main_menu_cars.'<Br><form method="POST"><table><tr><td class="btntd">'.$loc_search_filters.'</td><td>'.$loc_search_surname_short.' : <INPUT type="text" name="fio" size="30" maxlength="200" value="'.htmlspecialchars($fio, ENT_QUOTES).'"></td><td>Машина : <INPUT type="text" name="car" size="10" maxlength="50" value="'.htmlspecialchars($car, ENT_QUOTES).'"> '.$loc_visitors_document_short.' : <INPUT type="text" name="docum" size="10" maxlength="200" value="'.htmlspecialchars($docum, ENT_QUOTES).'"></td></tr>
 <tr><td>Приехал :</td><td colspan="2">'.DateSelector("din1", $din1).'-'.DateSelector("din2", $din2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;'.TimeSelector("tin1", $tin1).'-'.TimeSelector("tin2", $tin2).'</td></tr>
-<tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="Применять ли фильтр по дате ухода"> Уехал :&nbsp;</td><td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dout2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;'.TimeSelector("tout1", $tout1).'-'.TimeSelector("tout2", $tout2).'</td></tr>
+<tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="Применять ли фильтр по дате ухода"> '.$loc_cars_gone.' :&nbsp;</td><td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dout2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;'.TimeSelector("tout1", $tout1).'-'.TimeSelector("tout2", $tout2).'</td></tr>
 <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="Применять ли фильтр по дате последненго изменения">timestamp:</td><td>с '.DateSelector("dlc1", $dlc1).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc1", $tlc1).'</td><td>по '.DateSelector("dlc2", $dlc2).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc2", $tlc2).'</td></tr>
-<tr><td>Пропуск :</td><td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> К кому : <INPUT type="text" name="prim" size="20" maxlength="200" value="'.htmlspecialchars($prim, ENT_QUOTES).'"></td><td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">'.$print_link.'<INPUT type="submit" class="btn" onclick="this.disabled = true; submit();" value="'.$admin_apply_filters.'"> '.$admin_cancel_button.'</td></tr></table></form>' ;
+<tr><td>'.$loc_visitors_ticket.' :</td><td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> '.$loc_visitors_target.' : <INPUT type="text" name="prim" size="20" maxlength="200" value="'.htmlspecialchars($prim, ENT_QUOTES).'"></td><td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">'.$print_link.'<INPUT type="submit" class="btn" onclick="this.disabled = true; submit();" value="'.$admin_apply_filters.'"> '.$admin_cancel_button.'</td></tr></table></form>' ;
  if ($status_string != '') { print '<font class="usop_alert">'.$status_string.'</font><hr>'; }
-print '<Br><table><tr><td class="std">Приехал</td><td class="std">ФИО</td><td class="std">Машина (№)</td><td class="std">Документ</td><td class="std">Пропуск</td><td class="std">К кому</td><td class="std">Выехал</td><td class="std">Последнее изменение</td><td class="std">Создал</td></tr>';
+print '<Br><table><tr><td class="std">'.$loc_cars_arrived.'</td><td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_cars_carnumber.'</td><td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.'</td><td class="std">'.$loc_cars_gone.'</td><td class="std">'.$loc_visitors_last_change.'</td><td class="std">'.$loc_visitors_creator.'</td></tr>';
 $dates_res = mysqli_query ($sql, "SELECT DISTINCT date_in FROM visits_avt WHERE $filts1") ; $i = 0 ;
 while ($dates_row = mysqli_fetch_array($dates_res)) { $cu_datee = $dates_row["date_in"];
    $lviss_res = mysqli_query ($sql, "SELECT vp.*, op.login FROM visits_avt vp
@@ -735,8 +685,8 @@ while ($dates_row = mysqli_fetch_array($dates_res)) { $cu_datee = $dates_row["da
                                WHERE vp.`date_in` = '$cu_datee' $filts2 ORDER BY ISNULL(vp.date_out) DESC, vp.time_in DESC, vp.fio") ;
    if (mysqli_num_rows($lviss_res) != 0) { print '<tr><td colspan="8" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; }
    while ($lvs_row = mysqli_fetch_array($lviss_res)) { $i++;
-   if (($lvs_row["date_out"] == '' AND $lvs_row["time_out"] == '') OR ($lvs_row["date_out"] == '0000-00-00' AND $lvs_row["time_out"] == '00:00:00')) { if (($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR $user_info["is_administrator"] == 1) AND $prnt != 1) { $cu_edit_lnk = '<a href="?ops=eavt&amp;id='.$lvs_row["id"].'"><font class="comment">'.htmlspecialchars($index_pos_edit_text, ENT_QUOTES).'</font></a>'; } ELSE { $cu_edit_lnk =''; }; } ELSE { $cu_edit_lnk = '<NoBr>'.comp2hum_date($lvs_row["date_out"]).'&nbsp;'.$lvs_row["time_out"].'</NoBr>'; if ($user_info["is_root"] == 1 AND $prnt != 1) { $cu_edit_lnk .= ' <a href="?ops=epos&amp;id='.$lvs_row["id"].'"><font class="comment">[Редактировать]</font></a>'; } };
-   print '<tr><td class="sml">'.$lvs_row["time_in"].'</td><td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["car"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td><td class="sml">'.$cu_edit_lnk.'</td><td class="sml">'.$lvs_row["change_date"].'</td><td class="sml">'.htmlspecialchars($lvs_row["login"]).'</td><</tr>'; }
+   if (($lvs_row["date_out"] == '' AND $lvs_row["time_out"] == '') OR ($lvs_row["date_out"] == '0000-00-00' AND $lvs_row["time_out"] == '00:00:00')) { if (($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1 OR $user_info["is_administrator"] == 1) AND $prnt != 1) { $cu_edit_lnk = '<a href="?ops=eavt&amp;id='.$lvs_row["id"].'"><font class="comment">'.htmlspecialchars($index_pos_edit_text, ENT_QUOTES).'</font></a>'; } ELSE { $cu_edit_lnk =''; }; } ELSE { $cu_edit_lnk = '<NoBr>'.comp2hum_date($lvs_row["date_out"]).'&nbsp;'.$lvs_row["time_out"].'</NoBr>'; if ($user_info["is_root"] == 1 AND $prnt != 1) { $cu_edit_lnk .= ' <a href="?ops=eavt&amp;id='.$lvs_row["id"].'"><font class="comment">['.$loc_link_edit.']</font></a>'; } };
+   print '<tr><td class="sml">'.$lvs_row["time_in"].'</td><td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["car"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td><td class="sml">'.$cu_edit_lnk.'</td><td class="sml">'.$lvs_row["change_date"].'</td><td class="sml">'.htmlspecialchars($lvs_row["login"]).'</td></tr>'; }
 }   if ($i == 0) { print '<tr><td colspan="8"><Br></td></tr><tr><td colspan="8" class="usop_alert">'.$admin_no_data.'</td></tr>'; }   print '</table></form><Br>';
 }
 break; }   /* END АВТОМОБИЛИ - МОНИТОРИНГ */
@@ -745,6 +695,6 @@ break; }   /* END АВТОМОБИЛИ - МОНИТОРИНГ */
 };   /* END REPORTS MEGA-SWITCH */
 
 if ($prnt != 1) { print '</td></tr></table>'; }
-if ( ($ops == 'ruls' OR $ops == 'twk' OR $ops == 'opers' OR $ops == 'newpwd') and $prnt != 1) { print '<a href="new_passwords.php" target="_blank">Генератор паролей</a>'; }
+if ( ($ops == 'ruls' OR $ops == 'twk' OR $ops == 'opers' OR $ops == 'newpwd') and $prnt != 1) { print '<a href="new_passwords.php" target="_blank">'.$loc_password_generator.'</a>'; }
 print '</body></html>'; mysqli_close($sql);
 ?>
