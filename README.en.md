@@ -78,17 +78,17 @@ This system sove this issue.
     Integrated mini-help present.
 
 * Will be future develop ?
- - Small chance. But your can create issue about bug / vulnerability.
+  - Small chance. But your can create issue about bug / vulnerability.
 
-* Whu\y WEB ?
- - Web is really cross-platform. Guards can work
-   from any devices and cannot damage existeng archive records.
+* Why WEB ?
+  - Web is really cross-platform. Guards can work
+    from any devices and cannot damage existeng archive records.
 
 * Can be user on many gatehouses ?
- - Yes, create different logins for each gatehouse or host new instance.
+  - Yes, create different logins for each gatehouse or host new instance.
 
 * Does need database service ?
- - Not requred. Your can delete old records by `Adminer` from two tables.
+  - Not requred. Your can delete old records by `Adminer` from two tables.
 
 * I want new version.
- - Button [Fork].
+  - Button [Fork].
