@@ -112,7 +112,6 @@
 <li> Logins must differ.<br></li>
 <li> For change password of existing operator input new password and confirmation in correspond row</li>';
 
-  $loc_about_title = '';
   $loc_about_detailed_help = 'This system allow logging visitors and cars, arrived and gone from your company area.<br>
 <font class="usop_alert">0.</font> For start working input URL of server in browser, and type credentials in window
 <font class="btntd">%s</font> In field <font class="btntd">%s</font> enter your login,in field <font class="btntd">%s</font> - your password,

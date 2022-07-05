@@ -24,10 +24,10 @@
   $loc_search_surname_short = 'Nachn.';
   $loc_visitors_document = 'Dokument (iD-Karte, Reisepass)';
   $loc_visitors_document_short = 'Dokument';
-  $loc_visitors_come = 'kommen';
-  $loc_visitors_gone = 'gegangen';
+  $loc_visitors_come = 'Kommen';
+  $loc_visitors_gone = 'Gegangen';
   $loc_visitors_ticket = 'Ausweis';
-  $loc_visitors_target = 'die';
+  $loc_visitors_target = 'Die';
   $loc_visitors_comment = 'Kommentar';
   $loc_visitors_last_change = 'Letzte Änderung';
   $loc_visitors_creator = 'Erstellt von';
@@ -40,8 +40,8 @@
   
   
   $loc_cars_carnumber = 'Auto (№)';
-  $loc_cars_arrived = 'angekommen';
-  $loc_cars_gone = 'gegangen';
+  $loc_cars_arrived = 'Angekommen';
+  $loc_cars_gone = 'Gegangen';
   $loc_cars_adding_car = 'AUTO hinzufügen';
   $loc_cars_already_exists = 'DIESES AUTO EXISTIERT BEREITS';
   
@@ -58,7 +58,7 @@
   $loc_filtes_hint_date_out = 'Filter auf verschwundenes Datum anwenden';
   $loc_filtes_hint_date_last_change = 'Filter auf das Datum der letzten Änderungen anwenden';
 
-  $loc_link_edit = 'bearbeiten';
+  $loc_link_edit = 'Bearbeiten';
 
   $loc_edit_editing_title = 'Bearbeitung von';
   $loc_edit_editing_title_hint = 'Zeile mit id';
@@ -105,28 +105,26 @@
   $loc_login_change_password_exit_button = 'Ausfahrt';
 
   $loc_logins_detailed_help = 'Help :<br>
-<li> For add operator input new login (not match with existings),<br>&nbsp;&nbsp;&nbsp;non-empty password and password confirmation.</li>
-<li> Option `root` - full access to system, including operators management.<br>&nbsp;&nbsp;&nbsp;Can edit any records and input any dates.<br>&nbsp;&nbsp;&nbsp;(Overload another options)</li>
-<li> Option `Guard Chef` - View data for any period and change options.<br>&nbsp;&nbsp;&nbsp;Can\'t ADD data, but can edit opened.<br>&nbsp;&nbsp;&nbsp;Closed records in read-only. Any dates allowed.</li>
-<li> Option `Guard` - add and edit data only for last N days (from options).<br>&nbsp;&nbsp;&nbsp;Can input dates only in allowed range.</li>
-<li> Logins must differ.<br></li>
-<li> For change password of existing operator input new password and confirmation in correspond row</li>';
+<li> Für die Eingabe eines neuen Logins (nicht mit dem bestehenden übereinstimmend),<br>&nbsp;&nbsp;&nbsp;nicht leeres Kennwort und Kennwortbestätigung.</li>
+<li> Option `root` - voller Zugriff auf das System, einschließlich der Verwaltung der Operatoren.<br>&nbsp;&nbsp;&nbsp;Kann beliebige Datensätze bearbeiten und beliebige Daten eingeben.<br>&nbsp;&nbsp;&nbsp;(Überladen Sie andere Optionen)</li>
+<li> Option `Sicherheitsmanager` - Daten für einen beliebigen Zeitraum anzeigen und Optionen ändern.<br>&nbsp;&nbsp;&nbsp;Kann keine Daten hinzufügen, aber geöffnete bearbeiten.<br>&nbsp;&nbsp;&nbsp;Geschlossene Datensätze in schreibgeschützt. Beliebige Daten erlaubt.</li>
+<li> Option `Wachmann` - add and edit data only for last N days (from options).<br>&nbsp;&nbsp;&nbsp;Can input dates only in allowed range.</li>
+<li> Die Logins müssen sich unterscheiden.<br></li>
+<li> Zum Ändern des Passworts eines bestehenden Bedieners geben Sie das neue Passwort ein und bestätigen Sie es in der entsprechenden ZeileLogins müssen sich unterscheiden.</li>';
 
-  $loc_about_title = '';
-  $loc_about_detailed_help = 'This system allow logging visitors and cars, arrived and gone from your company area.<br>
-<font class="usop_alert">0.</font> For start working input URL of server in browser, and type credentials in window
-<font class="btntd">%s</font> In field <font class="btntd">%s</font> enter your login,in field <font class="btntd">%s</font> - your password,
-also checking gatehouse name <font class="btntd">%s</font> is really correct.<br>
-<font class="usop_alert">1.</font> Tabs on top allow switches for input data about visitors and cars.
-Notice tab switching clear unsaved forms data.<br>
-<font class="usop_alert">2.</font> Before add any data press button <font class="btntd">[F5]</font> for update time from server and input values in form fields. (Time format is <font class="btntd">24</font>-h)<br>
-Fileds with <font class="usop_alert">*</font> mark required.<br>
-<font class="usop_alert">3.</font> Verify inputed data and check box <font class="btntd"><input type="checkbox" class="btn" checked disabled>%s</font> (or <font class="btntd"><input type="checkbox" class="btn" checked disabled>%s</font>)
-and press button <INPUT type="button" class="btn" value="%s" disabled> (or <INPUT type="button" class="btn" value="%s" disabled>) only ONE time.<br>
-<font class="usop_alert">4.</font> At correct action inputed data appear in list below.<br>
-For guards this list show data only for N days (<font class="btntd">%s</font> for visitors / <font class="btntd">%s</font> for cars) by dates descend, and for any day opened visits show at top.
-Inside any day records sorted by descending arrival datetime.<br>
-<font class="usop_alert">5.</font> All questions pass here :<br><font class="btntd">%s</font>';
+  $loc_about_detailed_help = 'Dieses System ermöglicht die Erfassung von Besuchern und Fahrzeugen, die in Ihrem Firmenbereich ein- und ausgehen, um das Passwort eines bestehenden Bedieners zu ändern.<br>
+<font class="usop_alert">0.</font> Um mit der Arbeit zu beginnen, geben Sie die URL des Servers in den Browser ein, und geben Sie die Anmeldedaten in das Fenster ein <font class="btntd">%s</font> In Feld <font class="btntd">%s</font> geben Sie Ihr Login ein, in Feld <font class="btntd">%s</font> - Ihr Passwort,
+Überprüfen Sie auch, ob der Name des Pförtners <font class="btntd">%s</font> wirklich korrekt ist.<br>
+<font class="usop_alert">1.</font> Die Registerkarten oben ermöglichen die Eingabe von Daten über Besucher und Fahrzeuge.
+Beachten Sie, dass das Umschalten von Registerkarten nicht gespeicherte Formulardaten löscht.<br>
+<font class="usop_alert">2.</font> Bevor Sie Daten hinzufügen, drücken Sie die Taste <font class="btntd">[F5]</font>, um die Zeit vom Server zu aktualisieren und Werte in Formularfelder einzugeben. (Das Zeitformat ist <font class="btntd">24</font>-h)<br>
+Dateien mit der Markierung <font class="usop_alert">*</font> erforderlich.<br>
+<font class="usop_alert">3.</font> Überprüfen Sie die eingegebenen Daten und das Kontrollkästchen <font class="btntd"><input type="checkbox" class="btn" checked disabled>%s</font> (oder <font class="btntd"><input type="checkbox" class="btn" checked disabled>%s</font>)
+und drücken Sie die Taste <INPUT type="button" class="btn" value="%s" disabled> (oder <INPUT type="button" class="btn" value="%s" disabled>) nur EIN einziges Mal.<br>
+<font class="usop_alert">4.</font> Bei korrekter Aktion erscheinen die eingegebenen Daten in der Liste unten.<br>
+Für Wachen zeigt diese Liste nur Daten für N Tage (<font class="btntd">%s</font> für Besucher / <font class="btntd">%s</font> für Autos) nach Datum absteigend, und für jeden Tag geöffnete Besuche werden oben angezeigt.
+Innerhalb eines beliebigen Tages werden die Datensätze nach absteigendem Ankunftsdatum sortiert.<br>
+<font class="usop_alert">5.</font> Alle Fragen gehen hier vorbei :<br><font class="btntd">%s</font>';
 
   $loc_loginform_login = 'Anmeldung';
   $loc_loginform_password  = 'Kennwort';
@@ -171,31 +169,31 @@ Inside any day records sorted by descending arrival datetime.<br>
   $loc_unable_add_car_with_empty_surname = 'Kann kein Auto ohne den Nachnamen des Fahrers hinzufügen.';
   $loc_unable_add_car_with_empty_number = 'Kann kein Auto ohne den Nachnamen des Fahrers hinzufügen.';
 
-  $loc_opts_index_page_title = 'Main window header for guards';
-  $loc_opts_admin_page_title = 'Admin form header';
-  $loc_opts_index_add_pos_button = 'Add visitor button text';
-  $loc_opts_index_add_avt_button = 'Add car button text';
-  $loc_opts_index_add_pos_confm = 'Option text for confirm visitor';
-  $loc_opts_index_add_avt_confm = 'Option text for confirm car';
-  $loc_opts_index_num_pos_dates = 'View visitors for this last days';
-  $loc_opts_index_num_avt_dates = 'View cars for this last days';
-  $loc_opts_index_date_edit = 'Allow guards edit date';
-  $loc_opts_index_time_edit = 'Allow guards edit time';
-  $loc_opts_index_confirm_button = 'Text for confirm buttons (ОК, Yes, Ya etc)';
-  $loc_opts_index_pos_edit_text = 'Text for visitor editing link';
-  $loc_opts_index_avt_edit_text = 'Text for car editing link';
-  $loc_opts_index_tech_support = 'Tech support (string in Usage Rules)';
-  $loc_opts_index_cancel_button = 'Text for deny buttons Cancel, No, Discard, etc';
-  $loc_opts_index_pos_ststr = 'default status-sting in visitors form';
-  $loc_opts_index_avt_ststr = 'default status-sting in cars form';
-  $loc_opts_admin_apply_filters = 'Text for filters button';
-  $loc_opts_index_cancel_delay = 'Delay (seconds) at press [Cancel]';
-  $loc_opts_index_action_delay = 'Delay (seconds) at action';
-  $loc_opts_admin_save_changes = 'Save settings button text';
-  $loc_opts_admin_cancel_button = 'Reset button Text';
-  $loc_opts_admin_no_data = 'Message NO-Data (for filters)';
-  $loc_opts_index_print_checkbox = 'Text for checkbiox "for print"';
-  $loc_opts_index_show_reset_pwd = 'Show link for reset operator password';
-  $loc_opts_admin_min_pswd_diff = 'Minimal password complexity (number of symbols types, 0-8)';
+  $loc_opts_index_page_title = 'Die Kopfzeile des Hauptfensters, das von den Wächtern gesehen wird';
+  $loc_opts_admin_page_title = 'Kopfzeile des Verwaltungsformulars';
+  $loc_opts_index_add_pos_button = 'Text für die Schaltfläche zum Hinzufügen eines Besuchers';
+  $loc_opts_index_add_avt_button = 'Text für die Schaltfläche zum Hinzufügen eines Fahrzeugs';
+  $loc_opts_index_add_pos_confm = 'Text für Besucherbestätigungsoption';
+  $loc_opts_index_add_avt_confm = 'Text für Fahrzeugbestätigungsoption';
+  $loc_opts_index_num_pos_dates = 'Wie viele Tage die Besucher angezeigt werden sollen';
+  $loc_opts_index_num_avt_dates = 'Wie viele Tage im Voraus Autos vorführen';
+  $loc_opts_index_date_edit = 'Erlauben Sie den Wächtern, Daten zu bearbeiten';
+  $loc_opts_index_time_edit = 'Erlauben Sie den Wächtern, die Zeit zu bearbeiten';
+  $loc_opts_index_confirm_button = 'Text für die Bestätigungsschaltflächen (OK, YES, etc.)';
+  $loc_opts_index_pos_edit_text = 'Text für Besucher bearbeiten Link';
+  $loc_opts_index_avt_edit_text = 'Text für den Link zur Fahrzeugbearbeitung';
+  $loc_opts_index_tech_support = 'Kundendienst (Zeile in den Nutzungsbedingungen)';
+  $loc_opts_index_cancel_button = 'Text für die Schaltflächen Abbrechen usw.';
+  $loc_opts_index_pos_ststr = 'Standard-Statusleiste für Besucher';
+  $loc_opts_index_avt_ststr = 'Standard-Statusleiste für Fahrzeuge';
+  $loc_opts_admin_apply_filters = 'Text für die Schaltfläche, die die Filter auslöst';
+  $loc_opts_index_cancel_delay = 'Verzögerung (sec) beim Drücken von [Abbrechen]';
+  $loc_opts_index_action_delay = 'Verzögerung (sec) bei der Durchführung der Aktion';
+  $loc_opts_admin_save_changes = 'Text für die Schaltfläche "Speichern';
+  $loc_opts_admin_cancel_button = 'Text für Reset-Buttons im Admin-Bereich';
+  $loc_opts_admin_no_data = 'Keine Datenmeldung (für Filter)';
+  $loc_opts_index_print_checkbox = 'Text beim Kontrollkästchen "zu drucken".';
+  $loc_opts_index_show_reset_pwd = 'Link zum Zurücksetzen Ihres Kennworts anzeigen';
+  $loc_opts_admin_min_pswd_diff = 'Mindestkomplexität des Kennworts (Anzahl der Zeichenarten, 0-8)';
 
 ?>
