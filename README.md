@@ -1,6 +1,8 @@
 # Mini-GateHouse
 Миниатюрная веб-система для учёта посетителей на проходной по номерным пропускам.
 
+[English readme](https://github.com/Aminuxer/Mini-GateHouse/blob/main/README.en.md)
+
 ![Mini-GateHouse](https://user-images.githubusercontent.com/13812192/177326897-ba947f6c-b64d-4a85-b24f-154cb1a72786.png)
 
 Для гостевого / разового / экскурсионного доступа на предпритие часто заводят отдельные номерные пропуска,

@@ -1,6 +1,8 @@
 # Mini-GateHouse
 Minimalistic web-system for loggins visitors and cars by em-marine / mifare pre-configured number's tickets.
 
+[описание на русском](https://github.com/Aminuxer/Mini-GateHouse/blob/main/README.md)
+
 ![Mini-GateHouse-en](https://user-images.githubusercontent.com/13812192/177328156-1e1c21c3-816e-4ff8-8279-5a6919ddb59f.png)
 
 For guest / single / excursuion access to company area often em-marine / mifare numbered card used, but existing system don't
