@@ -33,6 +33,7 @@ For restore english-language default values of parameters execute script
 3). Create mysq-user and assign access rights:
 
 `CREATE USER 'gatehouse'@'localhost' IDENTIFIED BY 'gatehousepassword';`
+
 `GRANT SELECT,UPDATE,INSERT,DELETE ON gatehouse.* TO 'gatehouse'@'localhost';`
 
 Your can also revoke DELETE, this permission need only for delete operators.
