@@ -2,7 +2,7 @@
 $ops = isset($_GET['ops']) ? $_GET['ops'] : '';
 $id = isset($_GET['id']) ? $_GET['id'] : '' ;
 $prnt = isset($_GET['prnt']) ? $_GET['prnt'] : '' ;
-if ( preg_replace("/[0-9]/", "", $id) != '' ) {$id = 0 ;}
+if ( preg_replace("/[0-9]/u", "", $id) != '' ) {$id = 0 ;}
 
 ob_start('ob_gzhandler');
 require("options.php");   /* подключим файл настроек, из него берутся $db_hoster, $db_login, $db_pwd, $db_name */
@@ -39,19 +39,22 @@ $session_id_base_length = 177; /* Длина сессионного ключа (
 
 /* Функция проверки класса сложности пароля. */
 function get_password_complex ($pass) {
-      $pass = trim($pass);
-      if (strlen($pass) > 0) { $diff = 0; } ELSE { return -1; }
-      if (preg_match("/[a-z]+/", $pass)) { $diff++; print 'a1'; };
-      if (preg_match("/[A-Z]+/", $pass)) { $diff++; print 'A2';};
-      if (preg_match("/[а-я]+/iu", $pass)) { $diff++; print 'a33';};
-      if (preg_match("/[А-Я]+/iu", $pass)) { $diff++; print 'A44';};
-      if (preg_match("/[0-9]+/", $pass)) { $diff++; print 'N00';};
-      if (preg_match("/[-\~\`\!\"\'\|\№\#\$\&\^\%\@\;\%\:\?\*\/\+\_\=\.\,]+/", $pass)) { $diff++; print 'NSP';};
-      if (preg_match("/[\(\)\{\}]+/", $pass)) { $diff++; print 'NFF22';};
-      if (preg_match("/^[\x{30A0}-\x{30FF}'.'\x{3040}-\x{309F}\x{4E00}-\x{9FBF}\s]*$/u", $pass)) { $diff++; print 'Ch77';};
-      if (preg_match("@[^\x9\xA\xD\x20-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]@u", $pass)) { $diff++; print 'U99';};
-      if (preg_match("/[!:print:]+/iu", $pass)) { $diff++; print 'NPR666'; };
-return $diff; }
+      $pass = trim($pass); $d = '';
+      if ($pass != '') { $diff = 0; } ELSE { return array (-1, 0); }
+      if (preg_match("/(*UTF8)[0-9]+/u", $pass))        { $diff++; $d .= '+Digits '; };
+      if (preg_match("/(*UTF8)[a-z]+/u", $pass))        { $diff++; $d .= '+small_eng '; };
+      if (preg_match("/(*UTF8)[A-Z]+/u", $pass))        { $diff++; $d .= '+BIG_ENG '; };
+      if (preg_match("/(*UTF8)[а-яё]+/u", $pass))      { $diff++; $d .= '+small_ru '; };
+      if (preg_match("/(*UTF8)[А-ЯЁ]+/u", $pass))      { $diff++; $d .= '+BIG_RU '; };
+      if (preg_match("/(*UTF8)[-\~\`\!\"\'\|\№\#\$\&\^\%\@\;\%\:\?\*\/\+\_\=\.\,]+/u", $pass)) { $diff++; $d .= '+Special '; };
+      if (preg_match("/(*UTF8)[\(\)\{\}]+/u", $pass)) { $diff++; $d .= '+Brackets '; };
+      if (preg_match("/(*UTF8)\p{Arabic}+/u", $pass)) { $diff++; $d .= '+Arab '; };
+      if (preg_match("/(*UTF8)\p{Han}+/u", $pass))      { $diff++; $d .= '+China '; };
+      if (preg_match("/(*UTF8)\p{Zs}+/u", $pass))      { $diff++; $d .= '+India '; };
+      if (preg_match('/[\x{4E00}-\x{9FBF}\x{3040}-\x{309F}\x{30A0}-\x{30FF}]/u', $pass))      { $diff++; $d .= '+Japan '; };
+      if (preg_match('/[\x{3130}-\x{318F}\x{AC00}-\x{D7AF}]/u', $pass))      { $diff++; $d .= '+Korean '; };
+      $r = array($diff, $d);
+return $r; }
 
 /* Функция генерации случайного пароля заданной длинны. Второй параметр - набор символов */
 function generate_random_password($length=15, $arr='abcdefghijkmnoprstuvxyzABCDEFGHJKLMNPQRSTUVXYZ23456789_~!@#$%^&*') {
@@ -309,9 +312,10 @@ case 'newpwd' : {   /* Сброс своего пароля */
             if ($new_pass == $new_pass2 AND $new_pass == sha1($user_info["login"])) { print '<tr><td class="noborder" colspan="3"><font class="b">'.$loc_password_equal_login.'</font></td></tr>'; $pass_correct++; }
             if ($new_pass == $null_sha1 AND $new_pass2 = $null_sha1) { print '<tr><td class="noborder" colspan="3"><font class="b">'.$loc_empty_password_denied.'</font></td></tr>'; $pass_correct++; }
 
-            $new_complexity = get_password_complex($new_pass);
-            if ( $new_complexity < $admin_min_pswd_diff ) {
-               print '<tr><td class="noborder" colspan="3"><font class="b">'.sprintf($loc_password_complex_too_low, $admin_min_pswd_diff, $new_complexity).'</font></td></tr>';
+            $new_complexity = get_password_complex($_POST["new_pass"]);
+            if ( $new_complexity[0] < $admin_min_pswd_diff ) {
+               print '<tr><td class="noborder" colspan="3"><font class="b">'.
+               sprintf($loc_password_complex_too_low, $admin_min_pswd_diff, $new_complexity[0].' ('.$new_complexity[1].')').'</font></td></tr>';
                $pass_correct++;
             }
 
