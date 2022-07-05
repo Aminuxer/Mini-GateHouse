@@ -1,7 +1,7 @@
 # Mini-GateHouse
 Миниатюрная веб-система для учёта посетителей на проходной по номерным пропускам.
 
-[English readme](https://github.com/Aminuxer/Mini-GateHouse/blob/main/README.en.md)
+[English readme](<img src="https://img.icons8.com/emoji/48/000000/united-kingdom-emoji.png"/> https://github.com/Aminuxer/Mini-GateHouse/blob/main/README.en.md)
 
 ![Mini-GateHouse](https://user-images.githubusercontent.com/13812192/177326897-ba947f6c-b64d-4a85-b24f-154cb1a72786.png)
 
@@ -29,6 +29,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysq
 3). Создайте в базе данных mysql-пользователя и назначьте ему права доступа:
 
 `CREATE USER 'gatehouse'@'localhost' IDENTIFIED BY 'gatehousepassword';`
+
 `GRANT SELECT,UPDATE,INSERT,DELETE ON gatehouse.* TO 'gatehouse'@'localhost';`
 
 При желании можете отозвать DELETE, он нужен только при удалении операторов.
