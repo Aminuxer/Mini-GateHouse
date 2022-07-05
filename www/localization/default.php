@@ -1,6 +1,7 @@
 <?php
        /* Mini-GateHouse Default Localization strings (RUSSIAN) */
   /* Varialbles with strings for localization; Russian by default; */
+
   $loc_rand_pass_gen_random_passwords = 'Случайных паролей по';
   $loc_rand_pass_gen_symbols_length = 'символов длиной';
 

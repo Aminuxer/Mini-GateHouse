@@ -1,6 +1,7 @@
 <?php
-       /* Mini-GateHouse Default Localization strings (RUSSIAN) */
-  /* Varialbles with strings for localization; Russian by default; */
+       /* Mini-GateHouse ENGLISH Localization strings */
+  /* Varialbles for replacing; Set $localization = 'en'; in config for apply */
+
   $loc_rand_pass_gen_random_passwords = 'Random password at';
   $loc_rand_pass_gen_symbols_length = 'symbols length';
 
@@ -34,7 +35,7 @@
   $loc_visitors_adding_visitor = 'ADD VISITOR';
   $loc_visitors_already_exists = 'THIS VISIT ALREADY EXISTS';
   
-  $loc_without_option = 'Without this optopn';
+  $loc_without_option = 'Without this option';
   $loc_add_impossible = 'can\'t be added';
   
   
@@ -46,9 +47,9 @@
   
   $loc_search_filters = 'Filters:';
   $loc_print_text = 'print';
-  $loc_print_checkbox_hint = 'Chech this for prepare to print';
+  $loc_print_checkbox_hint = 'Check this for prepare to print';
   $loc_processing_text = 'EXECUTING';
-  $loc_success_text = 'RAEDY';
+  $loc_success_text = 'READY';
   $loc_failure_text = 'FAIL';
 
   $loc_filterdates_since = 'Since';
@@ -73,7 +74,7 @@
   $loc_options_parameter = 'Option';
   $loc_options_value = 'Value';
   $loc_options_description = 'Description';
-  $loc_options_checkbox_hint = 'Cet checkbox for enable option';
+  $loc_options_checkbox_hint = 'Set checkbox for enable option';
   $loc_options_numberinput_hint = 'Input number value';
   $loc_options_saved_ok = 'Changes saves successfully.';
 
@@ -157,7 +158,7 @@ Inside any day records sorted by descending arrival datetime.<br>
 
   $loc_repeat_again = 'Try again';
   $loc_not_enough_access_rights = 'No access rights';
-  $loc_not_allow_edit_closed_records = 'CANNOT EDI CLOSED RECORD !!';
+  $loc_not_allow_edit_closed_records = 'CANNOT EDIT CLOSED RECORD !!';
   $loc_not_exists_record = 'Record don\'t exist';
 
   $loc_select_edit_without_close = 'SELECTED EDITING WITHOUT FINALIZATION';
