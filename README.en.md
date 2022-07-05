@@ -1,5 +1,5 @@
 # Mini-GateHouse
-Minimalistic web-system for loggins visitors and cars by em-marine / mifare pre-configured number's tickets.
+Minimalistic web-system for logging visitors and cars by em-marine / mifare pre-configured number's tickets.
 
 [описание на русском](https://github.com/Aminuxer/Mini-GateHouse/blob/main/README.md)
 
