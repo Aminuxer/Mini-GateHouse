@@ -62,7 +62,8 @@ INSERT INTO `options` (`id`, `abbr`, `value`, `type`, `name`) VALUES
 (22,	'admin_cancel_button',	'Отмена',	't',	'Текст для кнопок сброса в админке'),
 (23,	'admin_no_data',	'Нет данных.',	't',	'Сообщение об отсутствии данных (для фильтров)'),
 (24,	'index_print_checkbox',	'печать',	't',	'Текст у чекбокса \"для печати\"'),
-(25,	'index_show_reset_pwd',	'1',	'b',	'Показывать ссылку сброса своего пароля');
+(25,	'index_show_reset_pwd',	'1',	'b',	'Показывать ссылку сброса своего пароля'),
+(26,	'admin_min_pswd_diff',	'0',	'i',	'Минимальная сложность  пароля (число типов символов, 0-8)');
 
 CREATE TABLE `stat` (
   `stat_id` mediumint(10) NOT NULL AUTO_INCREMENT,
