@@ -41,14 +41,16 @@ $session_id_base_length = 177; /* Длина сессионного ключа (
 function get_password_complex ($pass) {
       $pass = trim($pass);
       if (strlen($pass) > 0) { $diff = 0; } ELSE { return -1; }
-      if (preg_match("/[[:lower:]]+/u", $pass)) { $diff++; print 'a1'; };
-      if (preg_match("/[[:upper:]]+/u", $pass)) { $diff++; print 'A2';};
-      if (preg_match("/[а-я]+/u", $pass)) { $diff++; print 'a33';};
-      if (preg_match("/[А-Я]+/u", $pass)) { $diff++; print 'A44';};
-      if (preg_match("/[[:digit:]]+/", $pass)) { $diff++; print 'N00';};
+      if (preg_match("/[a-z]+/", $pass)) { $diff++; print 'a1'; };
+      if (preg_match("/[A-Z]+/", $pass)) { $diff++; print 'A2';};
+      if (preg_match("/[а-я]+/iu", $pass)) { $diff++; print 'a33';};
+      if (preg_match("/[А-Я]+/iu", $pass)) { $diff++; print 'A44';};
+      if (preg_match("/[0-9]+/", $pass)) { $diff++; print 'N00';};
       if (preg_match("/[-\~\`\!\"\'\|\№\#\$\&\^\%\@\;\%\:\?\*\/\+\_\=\.\,]+/", $pass)) { $diff++; print 'NSP';};
       if (preg_match("/[\(\)\{\}]+/", $pass)) { $diff++; print 'NFF22';};
-      if (preg_match("/[!:print:]+/u", $pass)) { $diff++; print 'NPR666'; };
+      if (preg_match("/^[\x{30A0}-\x{30FF}'.'\x{3040}-\x{309F}\x{4E00}-\x{9FBF}\s]*$/u", $pass)) { $diff++; print 'Ch77';};
+      if (preg_match("@[^\x9\xA\xD\x20-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]@u", $pass)) { $diff++; print 'U99';};
+      if (preg_match("/[!:print:]+/iu", $pass)) { $diff++; print 'NPR666'; };
 return $diff; }
 
 /* Функция генерации случайного пароля заданной длинны. Второй параметр - набор символов */
@@ -119,8 +121,10 @@ if (mysqli_error($sql) != '' OR mysqli_num_rows($login_res) == 0 OR
       </style><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>
       <div align="center"><form method="POST"><table>
       <tr><td colspan="2" class="ttl">'.$index_page_title.'</td></tr>
-      <tr><td>'.$loc_loginform_login.':</td><td><input type="text" name="ff_login" size="25"></td></tr>
-      <tr><td>'.$loc_loginform_password.':</td><td><input type="password" name="ff_pwd" size="25"></td></tr>
+      <tr><td>'.$loc_loginform_login.':</td>
+      <td><input type="text" name="ff_login" size="25"></td></tr>
+      <tr><td>'.$loc_loginform_password.':</td>
+      <td><input type="password" name="ff_pwd" size="25"></td></tr>
       <tr><td colspan="2" class="ttl"><input type="submit" value="'.$loc_loginform_input.'"></td></tr><table></FORM>
       <Br>'.$index_tech_support.'</div><Br><Br></body></html>';
       die;
@@ -273,7 +277,8 @@ if ($ops != 'epos' AND $ops != 'eavt') { $top_menu_out = $top_pos_lnk.$top_posm_
 
 if ($prnt != 1) {
    print '<table width="99%">
-   <tr>'.$top_menu_out.$top_ruls_lnk.$top_twk_lnk.'<td class="inactd" width="2%">&nbsp;</td><td width="1%"><a href="?ops=logout" title="'.$loc_main_menu_logout_hint.'" id="exitt">X</a></td></tr>
+   <tr>'.$top_menu_out.$top_ruls_lnk.$top_twk_lnk.'<td class="inactd" width="2%">&nbsp;</td>
+         <td width="1%"><a href="?ops=logout" title="'.$loc_main_menu_logout_hint.'" id="exitt">X</a></td></tr>
    <tr><td colspan="8" align="center">';
 }
 
@@ -330,9 +335,11 @@ case 'newpwd' : {   /* Сброс своего пароля */
                <tr><td class="noborder" colspan="2"><Br><INPUT type="hidden" name="send_st" value="1"></td></tr>
                <tr>
                   <td class="noborder">'.$loc_login_change_password_you_new_password.' <a href="new_passwords.php" target="_blank">?</a></td>
-                  <td class="noborder"><INPUT type="password" name="new_pass"></td><td class="noborder" rowspan="2">'.$cancel_button_main.'</td>
+                  <td class="noborder"><INPUT type="password" name="new_pass"></td>
+                  <td class="noborder" rowspan="2">'.$cancel_button_main.'</td>
                </tr>
-               <tr><td class="noborder">'.$loc_login_change_password_you_new_password2.'</td><td class="noborder"><INPUT type="password" name="new_pass2"></td></tr>
+               <tr><td class="noborder">'.$loc_login_change_password_you_new_password2.'</td>
+               <td class="noborder"><INPUT type="password" name="new_pass2"></td></tr>
                <tr><td class="noborder" colspan="3"><Br></td></tr>
             </form>';
          };
@@ -393,10 +400,12 @@ case 'pos' : {   /* START ПОСЕТИТЕЛИ */   $status_string = $index_pos_
       }   /* END ПОПЫТКА ЗАПИСИ */    ELSE { $status_string .= '<Br>'.$index_cancel_button ; };
    }   /* END НАЛИЧИЕ НАЖАТИЯ НА КНОПКУ */
    if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1) {
-      print '<Br><form method="post"><table><tr><td colspan="3" class="std">'.$loc_visitors_surname.'<font class="usop_alert">*</font></td><td colspan="2" class="std">'.$loc_visitors_document.'</td></tr>
+      print '<Br><form method="post"><table><tr><td colspan="3" class="std">'.$loc_visitors_surname.'<font class="usop_alert">*</font></td>
+          <td colspan="2" class="std">'.$loc_visitors_document.'</td></tr>
       <tr><td colspan="3"><INPUT type="text" class="req" name="p_fio" size="45" maxlength="200" value="'.htmlspecialchars(stripslashes($fio), ENT_QUOTES).'"></td>
           <td colspan="2"><INPUT type="text" name="p_docum" size="50" maxlength="200" value="'.htmlspecialchars(stripslashes($docum), ENT_QUOTES).'"></td></tr>
-      <tr><td colspan="5">&nbsp;</td></tr><tr><td colspan="2" class="std">'.$loc_visitors_come.'</td><td class="std">'.$loc_visitors_ticket.'</td>
+      <tr><td colspan="5">&nbsp;</td></tr><tr><td colspan="2" class="std">'.$loc_visitors_come.'</td>
+          <td class="std">'.$loc_visitors_ticket.'</td>
           <td class="std">'.$loc_visitors_target.' ('.$loc_visitors_comment.')</td>
           <td rowspan="2" class="btntd"><INPUT type="hidden" name="f_hid" value="yes"><INPUT type="checkbox" class="btn" name="f_confirm"> '.htmlspecialchars($index_add_pos_confm, ENT_QUOTES).'<Br>
               <INPUT type="submit" name="f_add_pos" value="'.htmlspecialchars($index_add_pos_button, ENT_QUOTES).'" onclick="this.disabled = true; submit();" class="btn"></td></tr>
@@ -409,9 +418,12 @@ case 'pos' : {   /* START ПОСЕТИТЕЛИ */   $status_string = $index_pos_
       $new_date = '--'; print '<table>';
       $res = mysqli_query ($sql, "SELECT * FROM visits_pos WHERE `date_in` <= '$curr_date' AND `date_in` >= '$min_date_pos' ORDER BY `date_in` DESC, ISNULL(date_out) DESC, time_in DESC, fio") ;
       if (mysqli_num_rows($res) != 0) {
-         print '<tr><td class="std">'.$loc_visitors_come.'</td><td class="std">'.$loc_search_surname_short.'</td>
-         <td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td>
-         <td class="std">'.$loc_visitors_target.'</td><td class="std">'.$loc_visitors_gone.'</td></tr>';
+         print '<tr><td class="std">'.$loc_visitors_come.'</td>
+         <td class="std">'.$loc_search_surname_short.'</td>
+         <td class="std">'.$loc_visitors_document_short.'</td>
+         <td class="std">'.$loc_visitors_ticket.'</td>
+         <td class="std">'.$loc_visitors_target.'</td>
+         <td class="std">'.$loc_visitors_gone.'</td></tr>';
       }
       while ($lvs_row = mysqli_fetch_array($res)) {
 
@@ -426,9 +438,11 @@ case 'pos' : {   /* START ПОСЕТИТЕЛИ */   $status_string = $index_pos_
             } ELSE { $cu_edit_lnk = '<td></td>'; };
          } ELSE { $cu_edit_lnk = '<td class="sml"><NoBr>'.comp2hum_date($lvs_row["date_out"]).'&nbsp;'.$lvs_row["time_out"].'</NoBr></td>'; };
 
-         print '<tr><td class="sml">'.$lvs_row["time_in"].'</td><td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td>
+         print '<tr><td class="sml">'.$lvs_row["time_in"].'</td>
+              <td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td>
               <td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td>
-              <td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td>'.$cu_edit_lnk.'</tr>';
+              <td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td>
+              <td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td>'.$cu_edit_lnk.'</tr>';
       }
       print '</table><Br>';
   }
@@ -496,15 +510,18 @@ case 'avt' : {   /* START АВТОМОБИЛИ */   $status_string = $index_avt_
    }   /* END НАЛИЧИЕ НАЖАТИЯ НА КНОПКУ */
    if ($user_info["is_root"] == 1 OR $user_info["is_guard"] == 1) {
       print '<Br><form method="post"><table><tr><td colspan="2" class="std">'.$loc_visitors_surname.'<font class="usop_alert">*</font></td>
-      <td class="std">'.$loc_cars_carnumber.' <font class="usop_alert">*</font></td><td colspan="2" class="std">'.$loc_visitors_document.'</td></tr>
+      <td class="std">'.$loc_cars_carnumber.' <font class="usop_alert">*</font></td>
+      <td colspan="2" class="std">'.$loc_visitors_document.'</td></tr>
       <tr><td colspan="2"><INPUT type="text" class="req" name="a_fio" size="27" maxlength="200" value="'.htmlspecialchars(stripslashes($fio), ENT_QUOTES).'"></td>
          <td><INPUT type="text" class="req" name="a_car" size="10" maxlength="50" value="'.htmlspecialchars(stripslashes($car), ENT_QUOTES).'"></td>
          <td colspan="2"><INPUT type="text" name="a_docum" size="50" maxlength="200" value="'.htmlspecialchars(stripslashes($docum), ENT_QUOTES).'"></td></tr>
-      <tr><td colspan="5">&nbsp;</td></tr><tr><td colspan="2" class="std">'.$loc_cars_arrived.'</td><td class="std">'.$loc_visitors_ticket.'</td>
+      <tr><td colspan="5">&nbsp;</td></tr><tr><td colspan="2" class="std">'.$loc_cars_arrived.'</td>
+         <td class="std">'.$loc_visitors_ticket.'</td>
          <td class="std">'.$loc_visitors_target.' ('.$loc_visitors_comment.')</td>
          <td rowspan="2" class="btntd"><INPUT type="hidden" name="a_hid" value="yes"><INPUT type="checkbox" class="btn" name="a_confirm"> '.htmlspecialchars($index_add_avt_confm, ENT_QUOTES).'<Br>
             <INPUT type="submit" name="f_add_avt" value="'.htmlspecialchars($index_add_avt_button, ENT_QUOTES).'" onclick="this.disabled = true; submit();" class="btn"></td></tr>
-      <tr><td colspan="2">'.$cu_date_html.'&nbsp;'.$cu_time_html.'</td><td><INPUT type="text" name="a_propusk" size="3" maxlength="20" value="'.htmlspecialchars(stripslashes($propusk), ENT_QUOTES).'"></td>
+      <tr><td colspan="2">'.$cu_date_html.'&nbsp;'.$cu_time_html.'</td>
+         <td><INPUT type="text" name="a_propusk" size="3" maxlength="20" value="'.htmlspecialchars(stripslashes($propusk), ENT_QUOTES).'"></td>
          <td><INPUT type="text" name="a_prim" size="22" maxlength="200" value="'.htmlspecialchars(stripslashes($prim), ENT_QUOTES).'"></td></tr>';
       print '</table></form><font class="usop_alert">'.$status_string.'</font><hr>';
    }
@@ -512,8 +529,13 @@ case 'avt' : {   /* START АВТОМОБИЛИ */   $status_string = $index_avt_
       $res = mysqli_query ($sql, "SELECT * FROM visits_avt WHERE `date_in` <= '$curr_date' AND `date_in` >= '$min_date_avt' ORDER BY `date_in` DESC, ISNULL(date_out) DESC, time_in DESC, fio") ;
 
       if (mysqli_num_rows($res) != 0) {
-         print '<tr><td class="std">'.$loc_cars_arrived.'</td><td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_cars_carnumber.'</td>
-            <td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.'</td><td class="std">'.$loc_cars_gone.'</td></tr>';
+         print '<tr><td class="std">'.$loc_cars_arrived.'</td>
+            <td class="std">'.$loc_search_surname_short.'</td>
+            <td class="std">'.$loc_cars_carnumber.'</td>
+            <td class="std">'.$loc_visitors_document_short.'</td>
+            <td class="std">'.$loc_visitors_ticket.'</td>
+            <td class="std">'.$loc_visitors_target.'</td>
+            <td class="std">'.$loc_cars_gone.'</td></tr>';
       }
 
       while ($lvs_row = mysqli_fetch_array($res)) {
@@ -523,9 +545,12 @@ case 'avt' : {   /* START АВТОМОБИЛИ */   $status_string = $index_avt_
                $cu_edit_lnk = '<td><a href="?ops=eavt&amp;id='.$lvs_row["id"].'"><font class="comment">'.htmlspecialchars($index_avt_edit_text, ENT_QUOTES).'</font></a></td>';
             } ELSE { $cu_edit_lnk = '<td></td>'; };
          } ELSE { $cu_edit_lnk = '<td class="sml"><NoBr>'.comp2hum_date($lvs_row["date_out"]).'&nbsp;'.$lvs_row["time_out"].'</NoBr></td>'; };
-         print '<tr><td class="sml">'.$lvs_row["time_in"].'</td><td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td>
-            <td class="sml">'.htmlspecialchars($lvs_row["car"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td>
-            <td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td><td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td>'.$cu_edit_lnk.'</tr>';
+         print '<tr><td class="sml">'.$lvs_row["time_in"].'</td>
+            <td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td>
+            <td class="sml">'.htmlspecialchars($lvs_row["car"], ENT_QUOTES).'</td>
+            <td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td>
+            <td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td>
+            <td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td>'.$cu_edit_lnk.'</tr>';
       }
       print '</table><Br>';
    }
@@ -616,7 +641,9 @@ case 'epos' : {   /* START ПОСЕТИТЕЛИ - EDIT */
          print '<Br><font class="btntd"><INPUT type="radio" name="act" value="none" checked></font> <font class="usop_alert">'.$edit_permit.'</font></label>';
       } ELSE {
          print  '<Br>'.$loc_edit_editing_visitor_header1.' :<Br><Br><table><tr><td class="std">'.$loc_visitors_come.'</td>
-                  <td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td>
+                  <td class="std">'.$loc_search_surname_short.'</td>
+                  <td class="std">'.$loc_visitors_document_short.'</td>
+                  <td class="std">'.$loc_visitors_ticket.'</td>
                   <td class="std">'.$loc_visitors_target.'</td></tr>';
 
          if ($user_info["is_root"] == 1) {
@@ -628,12 +655,14 @@ case 'epos' : {   /* START ПОСЕТИТЕЛИ - EDIT */
          };
 
          if ($allow_edit_data == 1) {
-               print '<tr><td class="sml">'.$date_in_html.'</td><td class="sml"><input type="text" name="f_fio" size="20" value="'.htmlspecialchars($row["fio"], ENT_QUOTES).'"></td>
+               print '<tr><td class="sml">'.$date_in_html.'</td>
+                     <td class="sml"><input type="text" name="f_fio" size="20" value="'.htmlspecialchars($row["fio"], ENT_QUOTES).'"></td>
                      <td class="sml"><input type="text" name="f_docum" size="5" value="'.htmlspecialchars($row["docum"], ENT_QUOTES).'"></td>
                      <td class="sml"><input type="text" name="f_propusk" size="5" value="'.htmlspecialchars($row["propusk"], ENT_QUOTES).'"></td>
                      <td class="sml"><input type="text" name="f_prim" size="5" value="'.htmlspecialchars($row["prim"], ENT_QUOTES).'"></td></tr>';
          } ELSE {
-               print '<tr><td class="sml">'.$date_in_html.'</td><td class="sml">'.htmlspecialchars($row["fio"], ENT_QUOTES).'</td>
+               print '<tr><td class="sml">'.$date_in_html.'</td>
+                     <td class="sml">'.htmlspecialchars($row["fio"], ENT_QUOTES).'</td>
                      <td class="sml">'.htmlspecialchars($row["docum"], ENT_QUOTES).'</td>
                      <td class="sml">'.htmlspecialchars($row["propusk"], ENT_QUOTES).'</td>
                      <td class="sml">'.htmlspecialchars($row["prim"], ENT_QUOTES).'</td></tr>';
@@ -747,8 +776,10 @@ case 'eavt' : {   /* START АВТОМОБИЛИ - EDIT */
          print '<Br><font class="btntd"><INPUT type="radio" name="act" value="none" checked></font> <font class="usop_alert">'.$edit_permit.'</font>';
       } ELSE {
          print  '<Br>'.$loc_edit_editing_cars_header1.' :<Br><Br><table><tr><td class="std">'.$loc_cars_arrived.'</td>
-            <td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_cars_carnumber.'</td>
-            <td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td>
+            <td class="std">'.$loc_search_surname_short.'</td>
+            <td class="std">'.$loc_cars_carnumber.'</td>
+            <td class="std">'.$loc_visitors_document_short.'</td>
+            <td class="std">'.$loc_visitors_ticket.'</td>
             <td class="std">'.$loc_visitors_target.'</td></tr>';
 
          if ($user_info["is_root"] == 1) {
@@ -759,7 +790,8 @@ case 'eavt' : {   /* START АВТОМОБИЛИ - EDIT */
          };
 
          if ($allow_edit_data == 1) {
-               print '<tr><td class="sml">'.$date_in_html.'</td><td class="sml"><input type="text" name="f_fio" size="20" value="'.htmlspecialchars($row["fio"], ENT_QUOTES).'"></td>
+               print '<tr><td class="sml">'.$date_in_html.'</td>
+                  <td class="sml"><input type="text" name="f_fio" size="20" value="'.htmlspecialchars($row["fio"], ENT_QUOTES).'"></td>
                   <td class="sml"><input type="text" name="f_car" size="15" value="'.htmlspecialchars($row["car"], ENT_QUOTES).'"></td>
                   <td class="sml"><input type="text" name="f_docum" size="5" value="'.htmlspecialchars($row["docum"], ENT_QUOTES).'"></td>
                   <td class="sml"><input type="text" name="f_propusk" size="5" value="'.htmlspecialchars($row["propusk"], ENT_QUOTES).'"></td>
@@ -840,7 +872,9 @@ case 'twk' : {   /* START НАСТРОЙКИ */
       if ( $twk_ready != 'OK' ) { print '<font class="std">NO OPTIONS TABLE</font><Br>USE SQL-script, fix access rights.<Br>'; }
       ELSE {   /* START НАСТРОЙКИ ЕСТЬ В БД */
             if ($prnt != 1) { print '<div align="right"><a href="?ops='.$ops.'&amp;prnt=1" target="_blank">'.$loc_print_text.'</a>&nbsp;&nbsp;&nbsp;</div>'; }
-            print '<Br><form method="post"><table><tr><td class="std">'.$loc_options_parameter.'</td><td class="std">'.$loc_options_value.' (50)</td><td class="std">'.$loc_options_description.'</td></tr>';
+            print '<Br><form method="post"><table><tr><td class="std">'.$loc_options_parameter.'</td>
+               <td class="std">'.$loc_options_value.' (50)</td>
+               <td class="std">'.$loc_options_description.'</td></tr>';
             while ($row = mysqli_fetch_array($options_res)) {   $cu_form_type = $row["type"];
 
                $db_option_abbr = $row["abbr"];
@@ -865,7 +899,9 @@ case 'twk' : {   /* START НАСТРОЙКИ */
                                     $cu_form_name = $db_option_name;
                          break; }
                };
-               print '<tr><td class="comment">'.$db_option_abbr.'</td><td>'.$cu_form_element.'</td><td class="sml">'.$cu_form_name.'</td></tr>';
+               print '<tr><td class="comment">'.$db_option_abbr.'</td>
+                     <td>'.$cu_form_element.'</td>
+                     <td class="sml">'.$cu_form_name.'</td></tr>';
             }
             if ($prnt != 1) {
                print '<tr><td colspan="3" class="btntd"><Br><INPUT type="hidden" name="f_hid" value="yes">
@@ -953,10 +989,14 @@ case 'opers' : {   /* START ОПЕРАТОРЫ */
 
       print '<tr><td colspan="9" class="sml btntd">'.$loc_logins_adduser_title_hint.'</td></tr>
       <tr><td class="btntd"><INPUT type="text" size="10" name="new_login" class="std comment"></td>
-         <td class="btntd"><INPUT type="checkbox" name="new_enable"></td><td class="btntd"><INPUT type="text" size="30" placeholder="'.$loc_logins_new_login_hint.'" name="new_name"></td>
-         <td class="btntd"><INPUT type="checkbox" name="new_root" class="usop_alert"></td><td class="btntd"><INPUT type="checkbox" name="new_admin" class="comment"></td>
-         <td class="btntd"><INPUT type="checkbox" name="new_guard"></td><td class="btntd"><INPUT type="password" size="10" name="new_pw1" class="std comment"></td>
-         <td class="btntd"><INPUT type="password" size="10" name="new_pw2" class="std comment"></td><td class="btntd"></td></tr>';
+         <td class="btntd"><INPUT type="checkbox" name="new_enable"></td>
+         <td class="btntd"><INPUT type="text" size="30" placeholder="'.$loc_logins_new_login_hint.'" name="new_name"></td>
+         <td class="btntd"><INPUT type="checkbox" name="new_root" class="usop_alert"></td>
+         <td class="btntd"><INPUT type="checkbox" name="new_admin" class="comment"></td>
+         <td class="btntd"><INPUT type="checkbox" name="new_guard"></td>
+         <td class="btntd"><INPUT type="password" size="10" name="new_pw1" class="std comment"></td>
+         <td class="btntd"><INPUT type="password" size="10" name="new_pw2" class="std comment"></td>
+         <td class="btntd"></td></tr>';
       if ($prnt != 1) {
          print '<tr>
          <td colspan="9" class="btntd"><Br><INPUT type="hidden" name="f_hid" value="yes"><INPUT type="submit" value="'.$admin_save_changes.'"
@@ -1057,14 +1097,16 @@ case 'posm' : {   /* START ПОСЕТИТЕЛИ - МОНИТОРИНГ */
       <tr><td class="btntd">'.$loc_search_filters.'</td>
          <td>'.$loc_search_surname_short.' : <INPUT type="text" name="fio" size="30" maxlength="200" value="'.htmlspecialchars($fio, ENT_QUOTES).'"></td>
          <td>'.$loc_visitors_document_short.' : <INPUT type="text" name="docum" size="25" maxlength="200" value="'.htmlspecialchars($docum, ENT_QUOTES).'"></td></tr>
-      <tr><td>'.$loc_visitors_come.' :</td><td colspan="2">'.DateSelector("din1", $din1).'-'.DateSelector("din2", $din2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
+      <tr><td>'.$loc_visitors_come.' :</td>
+         <td colspan="2">'.DateSelector("din1", $din1).'-'.DateSelector("din2", $din2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tin1", $tin1).'-'.TimeSelector("tin2", $tin2).'</td></tr>
       <tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="'.$loc_filtes_hint_date_out.'"> '.$loc_visitors_gone.' :&nbsp;&nbsp;</td>
          <td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dlc2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tout1", $tout1).'-'.TimeSelector("tout2", $tout2).'</td></tr>
       <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="'.$loc_filtes_hint_date_last_change.'">timestamp:</td>
          <td>'.$loc_filterdates_since.' '.DateSelector("dlc1", $dlc1).'&nbsp;&nbsp;&nbsp;
-            '.TimeSelector("tlc1", $tlc1).'</td><td>'.$loc_filterdates_to.' '.DateSelector("dlc2", $dlc2).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc2", $tlc2).'</td></tr>
+            '.TimeSelector("tlc1", $tlc1).'</td>
+            <td>'.$loc_filterdates_to.' '.DateSelector("dlc2", $dlc2).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc2", $tlc2).'</td></tr>
       <tr><td>'.$loc_visitors_ticket.' :</td>
          <td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> '.$loc_visitors_target.' :
             <INPUT type="text" name="prim" size="20" maxlength="200" value="'.htmlspecialchars($prim, ENT_QUOTES).'"></td>
@@ -1074,14 +1116,20 @@ case 'posm' : {   /* START ПОСЕТИТЕЛИ - МОНИТОРИНГ */
 
       if ($status_string != '') { print '<font class="usop_alert">'.$status_string.'</font><hr>'; }
 
-      print '<Br><table><tr><td class="std">'.$loc_visitors_come.'</td><td class="std">'.$loc_search_surname_short.'</td><td class="std">'.$loc_visitors_document_short.'</td><td class="std">'.$loc_visitors_ticket.'</td><td class="std">'.$loc_visitors_target.'</td><td class="std">'.$loc_visitors_gone.'</td><td class="std">'.$loc_visitors_last_change.'</td> <td class="std">'.$loc_visitors_creator.'</td></tr>';
+      print '<Br><table><tr><td class="std">'.$loc_visitors_come.'</td>
+            <td class="std">'.$loc_search_surname_short.'</td>
+            <td class="std">'.$loc_visitors_document_short.'</td>
+            <td class="std">'.$loc_visitors_ticket.'</td>
+            <td class="std">'.$loc_visitors_target.'</td>
+            <td class="std">'.$loc_visitors_gone.'</td>
+            <td class="std">'.$loc_visitors_last_change.'</td> <td class="std">'.$loc_visitors_creator.'</td></tr>';
       $dates_res = mysqli_query ($sql, "SELECT DISTINCT date_in FROM visits_pos WHERE $filts1") ; $i = 0;
       while ($dates_row = mysqli_fetch_array($dates_res)) {
          $cu_datee = $dates_row["date_in"];
          $lviss_res = mysqli_query ($sql, "SELECT vp.*, op.login FROM visits_pos vp
                                     LEFT JOIN operators op ON op.id = vp.operator_id
                                     WHERE vp.`date_in` = '$cu_datee' $filts2 ORDER BY ISNULL(vp.date_out) DESC, vp.time_in DESC, vp.fio") ;
-         if (mysqli_num_rows($lviss_res) != 0) { print '<tr><td colspan="7" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; }
+         if (mysqli_num_rows($lviss_res) != 0) { print '<tr><td colspan="8" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; }
          while ($lvs_row = mysqli_fetch_array($lviss_res)) {
             $i++;
 
@@ -1094,15 +1142,17 @@ case 'posm' : {   /* START ПОСЕТИТЕЛИ - МОНИТОРИНГ */
                   if ($user_info["is_root"] == 1 AND $prnt != 1) { $cu_edit_lnk .= ' <a href="?ops=epos&amp;id='.$lvs_row["id"].'"><font class="comment">['.$loc_link_edit.']</font></a>'; }
             };
 
-            print '<tr><td class="sml">'.$lvs_row["time_in"].'</td><td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td>
+            print '<tr><td class="sml">'.$lvs_row["time_in"].'</td>
+               <td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td>
                <td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td>
                <td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td>
                <td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td>
-               <td class="sml">'.$cu_edit_lnk.'</td><td class="sml">'.$lvs_row["change_date"].'</td>
+               <td class="sml">'.$cu_edit_lnk.'</td>
+               <td class="sml">'.$lvs_row["change_date"].'</td>
                <td class="sml">'.htmlspecialchars($lvs_row["login"]).'</td></tr>';
          }
       }
-      if ($i == 0) { print '<tr><td colspan="7"><Br></td></tr><tr><td colspan="7" class="usop_alert">'.$admin_no_data.'</td></tr>'; }
+      if ($i == 0) { print '<tr><td colspan="8"><Br></td></tr><tr><td colspan="8" class="usop_alert">'.$admin_no_data.'</td></tr>'; }
       print '</table><Br>';
    }
 break; }   /* END ПОСЕТИТЕЛИ - МОНИТОРИНГ */
@@ -1192,11 +1242,13 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
       if ($st_out == 'on') {$st_out_html = ' checked';} ELSE {$st_out_html = '';};
       if ($st_lc == 'on') {$st_lc_html = ' checked';} ELSE {$st_lc_html = '';};
 
-      print $loc_main_menu_cars.'<Br><form method="POST"><table><tr><td class="btntd">'.$loc_search_filters.'</td>
+      print $loc_main_menu_cars.'<Br><form method="POST"><table>
+      <tr><td class="btntd">'.$loc_search_filters.'</td>
          <td>'.$loc_search_surname_short.' : <INPUT type="text" name="fio" size="30" maxlength="200" value="'.htmlspecialchars($fio, ENT_QUOTES).'"></td>
          <td>'.$loc_cars_carnumber.' : <INPUT type="text" name="car" size="10" maxlength="50" value="'.htmlspecialchars($car, ENT_QUOTES).'"> '.$loc_visitors_document_short.' :
                <INPUT type="text" name="docum" size="10" maxlength="200" value="'.htmlspecialchars($docum, ENT_QUOTES).'"></td></tr>
-      <tr><td>'.$loc_cars_arrived.' :</td><td colspan="2">'.DateSelector("din1", $din1).'-'.DateSelector("din2", $din2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
+      <tr><td>'.$loc_cars_arrived.' :</td>
+            <td colspan="2">'.DateSelector("din1", $din1).'-'.DateSelector("din2", $din2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tin1", $tin1).'-'.TimeSelector("tin2", $tin2).'</td></tr>
       <tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="'.$loc_filtes_hint_date_out.'"> '.$loc_cars_gone.' :&nbsp;</td>
          <td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dout2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
@@ -1204,14 +1256,16 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
       <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="'.$loc_filtes_hint_date_last_change.'">timestamp:</td>
          <td>'.$loc_filterdates_since.' '.DateSelector("dlc1", $dlc1).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc1", $tlc1).'</td>
          <td>'.$loc_filterdates_to.' '.DateSelector("dlc2", $dlc2).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc2", $tlc2).'</td></tr>
-      <tr><td>'.$loc_visitors_ticket.' :</td><td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> '.$loc_visitors_target.' :
+      <tr><td>'.$loc_visitors_ticket.' :</td>
+         <td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> '.$loc_visitors_target.' :
                <INPUT type="text" name="prim" size="20" maxlength="200" value="'.htmlspecialchars($prim, ENT_QUOTES).'"></td>
          <td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">'.$print_link.'<INPUT type="submit" class="btn" onclick="this.disabled = true; submit();" value="'.$admin_apply_filters.'"> '.$admin_cancel_button.'</td></tr>
       </table></form>' ;
 
       if ($status_string != '') { print '<font class="usop_alert">'.$status_string.'</font><hr>'; }
 
-      print '<Br><table><tr><td class="std">'.$loc_cars_arrived.'</td><td class="std">'.$loc_search_surname_short.'</td>
+      print '<Br><table><tr><td class="std">'.$loc_cars_arrived.'</td>
+         <td class="std">'.$loc_search_surname_short.'</td>
          <td class="std">'.$loc_cars_carnumber.'</td>
          <td class="std">'.$loc_visitors_document_short.'</td>
          <td class="std">'.$loc_visitors_ticket.'</td>
@@ -1226,7 +1280,7 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
          $lviss_res = mysqli_query ($sql, "SELECT vp.*, op.login FROM visits_avt vp
                                     LEFT JOIN operators op ON op.id = vp.operator_id
                                     WHERE vp.`date_in` = '$cu_datee' $filts2 ORDER BY ISNULL(vp.date_out) DESC, vp.time_in DESC, vp.fio") ;
-         if (mysqli_num_rows($lviss_res) != 0) { print '<tr><td colspan="8" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; }
+         if (mysqli_num_rows($lviss_res) != 0) { print '<tr><td colspan="9" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; }
          while ($lvs_row = mysqli_fetch_array($lviss_res)) {
             $i++;
 
@@ -1245,11 +1299,12 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
                   <td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td>
                   <td class="sml">'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'</td>
                   <td class="sml">'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'</td>
-                  <td class="sml">'.$cu_edit_lnk.'</td><td class="sml">'.$lvs_row["change_date"].'</td>
+                  <td class="sml">'.$cu_edit_lnk.'</td>
+                  <td class="sml">'.$lvs_row["change_date"].'</td>
                   <td class="sml">'.htmlspecialchars($lvs_row["login"]).'</td></tr>';
          }
       }
-      if ($i == 0) { print '<tr><td colspan="8"><Br></td></tr><tr><td colspan="8" class="usop_alert">'.$admin_no_data.'</td></tr>'; }
+      if ($i == 0) { print '<tr><td colspan="9"><Br></td></tr><tr><td colspan="9" class="usop_alert">'.$admin_no_data.'</td></tr>'; }
       print '</table></form><Br>';
    }
 break; }   /* END АВТОМОБИЛИ - МОНИТОРИНГ */
