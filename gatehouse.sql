@@ -29,9 +29,9 @@ INSERT INTO `operators` (`id`, `login`, `passwd`, `is_root`, `is_administrator`,
 
 CREATE TABLE `options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `abbr` varchar(20) DEFAULT NULL COMMENT 'Аббревиатура опции',
+  `abbr` varchar(20) NOT NULL COMMENT 'Аббревиатура опции',
   `value` varchar(50) DEFAULT NULL COMMENT 'Значение опции',
-  `type` set('b','i','t') DEFAULT NULL COMMENT 'Тип параметра (b - галка, i - целое, t - текст)',
+  `type` enum('b','i','t') NOT NULL COMMENT 'Тип параметра (b - галка, i - целое, t - текст)',
   `name` varchar(200) DEFAULT NULL COMMENT 'Описание опции (текстом)',
   PRIMARY KEY (`id`),
   KEY `abbr` (`abbr`)
