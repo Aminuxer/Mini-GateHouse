@@ -12,7 +12,7 @@ $db_pwd = 'gatehousepassword' ;
 /* CHANGE IT AFTER INSTALLATION */
 $db_add_rnd_key = '00000000000000080000000000000000000000900000000000';
 
-/* Localization. Default = ru, available = en / de or other file like ??.php from localization dir */
+/* Localization. Default = ru, available = en / de / fr / cn or other file like ??.php from localization dir */
 $localization = 'ru';
 
 /* Deny some user-agents by regular expression  */
