@@ -1,6 +1,6 @@
 <?php
        /* Mini-GateHouse DEUTSCH Localization strings */
-  /* Varialbles for replacing; Set $localization = 'de'; in config for apply */
+  /* Variables for replacing; Set $localization = 'de'; in config for apply */
 
   $loc_rand_pass_gen_random_passwords = 'Zufälliges Passwort bei';
   $loc_rand_pass_gen_symbols_length = 'Symbole Länge';

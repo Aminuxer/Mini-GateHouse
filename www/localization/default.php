@@ -1,6 +1,6 @@
 <?php
        /* Mini-GateHouse Default Localization strings (RUSSIAN) */
-  /* Varialbles with strings for localization; Russian by default; */
+  /* Variables with strings for localization; Russian by default; */
 
   $loc_rand_pass_gen_random_passwords = 'Случайных паролей по';
   $loc_rand_pass_gen_symbols_length = 'символов длиной';
@@ -90,7 +90,7 @@
   $loc_logins_role_password = 'Пароль';
   $loc_logins_role_password2 = 'Подтверждение пароля';
   $loc_logins_delete = 'Удалить';
-  $loc_logins_adduser_title_hint = 'Для добавления нового оператора обязательно введите новый логин и совпадающие неодинаковые пароли :';
+  $loc_logins_adduser_title_hint = 'Для добавления нового оператора обязательно введите новый логин и совпадающие пароли :';
   $loc_logins_new_login_hint = '<Новый оператор>';
 
   $loc_login_current_user_text = 'Текущий пользователь';  

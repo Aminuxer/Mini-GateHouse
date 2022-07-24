@@ -1,6 +1,6 @@
 <?php
-       /* Mini-GateHouse CHINA (Simplified) Localization strings (MACHINE TRANSLATION) */
-  /* Varialbles with strings for localization; 用字符串进行定位的精算; */
+       /* Mini-GateHouse CHINESE (Simplified) Localization strings (MACHINE TRANSLATION) */
+  /* Variables with strings for localization; 用字符串进行定位的精算; */
 
   $loc_rand_pass_gen_random_passwords = '随机密码由';
   $loc_rand_pass_gen_symbols_length = '长的字符';
