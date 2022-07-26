@@ -43,7 +43,9 @@ Recommnded generate strong random password.
 on server and check data from step 3 for corrct connect to database.
 
 Set variable `$db_add_rnd_key` in config to long random string.
+
 Set interface language with `localization` variable from list.
+
 Pull requests with new localizations files are welcome.
 
 5). Open web-server page in browser and try login with empty passwords
