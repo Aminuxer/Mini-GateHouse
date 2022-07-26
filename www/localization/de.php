@@ -46,6 +46,7 @@
   $loc_cars_already_exists = 'DIESES AUTO EXISTIERT BEREITS';
   
   $loc_search_filters = 'Filter:';
+  $loc_filters_timestamp = 'Zeit ändern';
   $loc_print_text = 'drucken';
   $loc_print_checkbox_hint = 'Prüfen Sie dies, um sich auf den Druck vorzubereiten';
   $loc_processing_text = 'AUSFÜHREN';

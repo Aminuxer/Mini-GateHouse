@@ -46,6 +46,7 @@
   $loc_cars_already_exists = 'هذه السيارة موجودة بالفعل';
   
   $loc_search_filters = 'المرشحات:';
+  $loc_filters_timestamp = 'غير الوقت';
   $loc_print_text = 'عجل البحر';
   $loc_print_checkbox_hint = 'إذا تم تعيين هذا الخيار ، فسيتم تحضير المستند للطباعة';
   $loc_processing_text = 'نفذ';

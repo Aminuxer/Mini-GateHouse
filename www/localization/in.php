@@ -46,6 +46,7 @@
   $loc_cars_already_exists = 'यह रिकॉर्ड पहले से मौजूद है';
   
   $loc_search_filters = 'फिल्टर:';
+  $loc_filters_timestamp = 'समय परिवर्तन';
   $loc_print_text = 'नाकाबंदी करना';
   $loc_print_checkbox_hint = 'यदि यह विकल्प सेट है, तो दस्तावेज़ मुद्रण के लिए तैयार किया जाएगा';
   $loc_processing_text = 'अभिनय करना';
@@ -121,7 +122,7 @@
 <font class="usop_alert">2.</font> डेटा जोड़ने से पहले, कीबोर्ड पर बटन दबाएं <font class="btntd">[F5]</font>सर्वर से समय अपडेट करने और विवरण दर्ज करने के लिए। (समय दर्ज किया गया है <font class="btntd">24</font>-घंटे का प्रारूप)<br>
 कृपया ध्यान दें कि से चिह्नित फ़ील्ड <font class="usop_alert">*</font> अनिवार्य हैं।<br>
 <font class="usop_alert">3.</font> यदि डेटा सही ढंग से दर्ज किया गया है, तो विकल्प निर्दिष्ट करें <font class="btntd"><input type="checkbox" class="btn" checked disabled>%s</font> (или <font class="btntd"><input type="checkbox" class="btn" checked disabled>%s</font>)
-и нажмите кнопку <INPUT type="button" class="btn" value="%s" disabled> (या <INPUT type="button" class="btn" value="%s" disabled>) बिल्कुल एक बार।<br>
+और बटन दबाएं <INPUT type="button" class="btn" value="%s" disabled> (या <INPUT type="button" class="btn" value="%s" disabled>) बिल्कुल एक बार।<br>
 <font class="usop_alert">4.</font> यदि सब कुछ सही ढंग से किया जाता है, तो नीचे दी गई सूची में आपके डेटा के साथ एक पंक्ति दिखाई देगी।<br>
 सिस्टम को इस तरह से कॉन्फ़िगर किया गया है कि पिछले कुछ दिनों का डेटा प्रदर्शित होता है (<font class="btntd">%s</font> आगंतुकों के लिए / <font class="btntd">%s</font> कारों के लिए) अवरोही तिथियां, और पहले प्रत्येक दिन के लिए
 अपूर्ण विज़िट प्रदर्शित की जाती हैं, और फिर पूर्ण की जाती हैं। प्रत्येक उपसमूह में, प्रविष्टियों को प्रवेश समय के अनुसार उल्टे क्रम में क्रमबद्ध किया जाता है।<br>

@@ -46,6 +46,7 @@
   $loc_cars_already_exists = 'CETTE VOITURE EXISTE DÉJÀ';
   
   $loc_search_filters = 'Filtres:';
+  $loc_filters_timestamp = 'changer le temps';
   $loc_print_text = 'imprimer';
   $loc_print_checkbox_hint = 'Cochez cette case pour préparer l\'impression';
   $loc_processing_text = 'EXECUTING';

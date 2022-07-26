@@ -46,6 +46,7 @@
   $loc_cars_already_exists = 'この車はすでにあります';
   
   $loc_search_filters = 'フィルタ:';
+  $loc_filters_timestamp = '時間を変更する';
   $loc_print_text = '密閉する';
   $loc_print_checkbox_hint = 'このオプションが設定されている場合、ドキュメントは印刷用に準備されます';
   $loc_processing_text = '実行';

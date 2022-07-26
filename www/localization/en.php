@@ -46,6 +46,7 @@
   $loc_cars_already_exists = 'THIS CAR ALREADY EXISTS';
   
   $loc_search_filters = 'Filters:';
+  $loc_filters_timestamp = 'timestamp';
   $loc_print_text = 'print';
   $loc_print_checkbox_hint = 'Check this for prepare to print';
   $loc_processing_text = 'EXECUTING';

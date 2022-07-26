@@ -1107,7 +1107,7 @@ case 'posm' : {   /* START ПОСЕТИТЕЛИ - МОНИТОРИНГ */
       <tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="'.$loc_filtes_hint_date_out.'"> '.$loc_visitors_gone.' :&nbsp;&nbsp;</td>
          <td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dlc2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tout1", $tout1).'-'.TimeSelector("tout2", $tout2).'</td></tr>
-      <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="'.$loc_filtes_hint_date_last_change.'">timestamp:</td>
+      <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="'.$loc_filtes_hint_date_last_change.'">'.$loc_filters_timestamp.'</td>
          <td>'.$loc_filterdates_since.' '.DateSelector("dlc1", $dlc1).'&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tlc1", $tlc1).'</td>
             <td>'.$loc_filterdates_to.' '.DateSelector("dlc2", $dlc2).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc2", $tlc2).'</td></tr>
@@ -1257,7 +1257,7 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
       <tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="'.$loc_filtes_hint_date_out.'"> '.$loc_cars_gone.' :&nbsp;</td>
          <td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dout2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tout1", $tout1).'-'.TimeSelector("tout2", $tout2).'</td></tr>
-      <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="'.$loc_filtes_hint_date_last_change.'">timestamp:</td>
+      <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="'.$loc_filtes_hint_date_last_change.'">'.$loc_filters_timestamp.'</td>
          <td>'.$loc_filterdates_since.' '.DateSelector("dlc1", $dlc1).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc1", $tlc1).'</td>
          <td>'.$loc_filterdates_to.' '.DateSelector("dlc2", $dlc2).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc2", $tlc2).'</td></tr>
       <tr><td>'.$loc_visitors_ticket.' :</td>

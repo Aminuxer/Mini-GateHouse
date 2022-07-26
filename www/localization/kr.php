@@ -46,6 +46,7 @@
   $loc_cars_already_exists = '이 차는 이미';
   
   $loc_search_filters = '필터:';
+  $loc_filters_timestamp = '시간 변경';
   $loc_print_text = '밀봉하다';
   $loc_print_checkbox_hint = '이 옵션을 설정하면 문서가 인쇄될 준비가 됩니다.';
   $loc_processing_text = '공연하다';

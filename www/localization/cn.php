@@ -46,6 +46,7 @@
   $loc_cars_already_exists = '已经有这种车了';
   
   $loc_search_filters = '过滤器:';
+  $loc_filters_timestamp = '改变时间';
   $loc_print_text = '印刷品';
   $loc_print_checkbox_hint = '如果选择了这个选项，文件将被准备用于打印';
   $loc_processing_text = '相关的';

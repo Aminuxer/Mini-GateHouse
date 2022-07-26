@@ -46,6 +46,7 @@
   $loc_cars_already_exists = 'YA EXISTE UN COCHE DE ESTE TIPO';
   
   $loc_search_filters = 'Filtros:';
+  $loc_filters_timestamp = 'cambio de hora';
   $loc_print_text = 'Imprimir';
   $loc_print_checkbox_hint = 'Si se selecciona esta opción, el documento se preparará para la impresión';
   $loc_processing_text = 'RELACIONADO';

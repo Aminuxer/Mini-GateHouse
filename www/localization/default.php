@@ -46,6 +46,7 @@
   $loc_cars_already_exists = 'ТАКОЙ АВТОМОБИЛЬ УЖЕ ЕСТЬ';
   
   $loc_search_filters = 'Фильтры:';
+  $loc_filters_timestamp = 'время изменения';
   $loc_print_text = 'печать';
   $loc_print_checkbox_hint = 'Если эта опция установлена, документ будет подготовлен к печати';
   $loc_processing_text = 'ВЫПОЛНЯЮ';
