@@ -52,7 +52,7 @@
   $loc_processing_text = 'EXECUTING';
   $loc_success_text = 'READY';
   $loc_failure_text = 'FAIL';
-दबाएं
+
   $loc_filterdates_since = 'Since';
   $loc_filterdates_to = 'to';
 
