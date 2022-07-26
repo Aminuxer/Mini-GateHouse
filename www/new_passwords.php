@@ -6,14 +6,15 @@ include("localization/default.php");
 ob_start('ob_gzhandler');
 $min_lenght = 7; $max_lenght = 512; $min_num = 1; $max_num = 128; $complex = 3;
 print '<html><head>
-<title>Генератор паролей</title>
+<title>'.$loc_password_generator.'</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style>
     body {backgroung-color: silver; font-size: 12pt;}
     table {background-color: white; font-family:courier; text-align: left; border-collapse: collapse;}
     td {font-face:Arial; font-size: 14pt; border: 1px solid black;}
     </style>
-</head><body>';
+</head><body>
+<h3>'.$loc_password_generator.'</h3>';
 
 if ($length < $min_lenght OR $length > $max_lenght) { $length = 10; }
 if ($num < $min_num OR $num > $max_num) { $num = 25; }
