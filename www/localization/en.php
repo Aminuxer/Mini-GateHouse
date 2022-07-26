@@ -66,7 +66,7 @@
   $loc_edit_editing_visitor_header1= 'Your edit record fot this visitor';
   $loc_edit_editing_cars_header1= 'Your edit record fot this car';
 
-  $loc_edit_accessible_actions = 'Next action allowed';
+  $loc_edit_accessible_actions = 'Next actions allowed';
   $loc_edit_action1_assign_visitor_gone_time = 'Set gone time';
   $loc_edit_action1_assign_car_gone_time = 'Set gone time';
   $loc_edit_action2_change_record_or_unlock = 'Change data and unlock visit.';
@@ -140,7 +140,7 @@ Inside any day records sorted by descending arrival datetime.<br>
   $loc_old_password_equal_new = 'Old password equal new.';
   $loc_password_equal_login = 'Password can\'t match with login.';
   $loc_empty_password_denied = 'Emplty password not allowed.';
-  $loc_password_complex_too_low = 'ПPassword too simple. Required at least %s different symbol types. Current difficulty: %s.';
+  $loc_password_complex_too_low = 'Password too simple. Required at least %s different symbol types. Current difficulty: %s.';
   
   $loc_password_changed_ok = 'Password changed successfully.';
   $loc_password_changed_fail = 'Password not changes.<Br>Ask your sysadmin/IT Dep.';
