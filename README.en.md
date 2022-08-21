@@ -77,6 +77,18 @@ This system sove this issue.
 * Can by used on mobile device ?
   - Yes
 
+* I forget user/admin password or drop admin permission. How to reset password / recovery permissions ?
+  - connect to server over SSH, and type command `mysql` for connect to database. User mysql-root password.
+  - select DB:
+     `USE gatehouse;`
+  - View user list:
+     `SELECT id, login FROM operators`
+  - reset password to empty string for selected user:
+     `UPDATE operators SET password = 'da39a3ee5e6b4b0d3255bfef95601890afd80709' WHERE login = 'root' `
+  - enable selected user and recover root permission:
+     `UPDATE operators SET enable = '1', is_root = '1' WHERE login = 'root' `
+  - login ro system and set new password fom web-interface
+
 * How long used ?
   - 15 years =)
 
@@ -89,7 +101,7 @@ This system sove this issue.
 
 * Why WEB ?
   - Web is really cross-platform. Guards can work
-    from any devices and cannot damage existeng archive records.
+    from any devices and cannot damage existing archive records.
 
 * Can be user on many gatehouses ?
   - Yes, create different logins for each gatehouse or host new instance.
