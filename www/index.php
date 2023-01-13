@@ -234,7 +234,7 @@ if ( isset($_POST["prnt_button"]) || ( isset($_GET["prnt"]) && $_GET["prnt"] == 
 
 
 if ($prnt != '1') {
-     $print_link = '<INPUT type="checkbox" class="btn" name="prnt_button" title="'.$loc_print_checkbox_hint.'">'.$index_print_checkbox.' '; }
+     $print_link = '<INPUT type="checkbox" class="btn" name="prnt_button" title="'.$loc_print_checkbox_hint.'" id="prnt_button"><label for="prnt_button">'.$index_print_checkbox.'</label> '; }
      ELSE { $print_link = ''; };
 
 if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) { $title_text = $admin_page_title; } ELSE { $title_text = $index_page_title; };
@@ -1019,6 +1019,7 @@ case 'posm' : {   /* START ПОСЕТИТЕЛИ - МОНИТОРИНГ */
    if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) {
       $filts1 = "`date_in` <= '$curr_date' ORDER BY date_in DESC LIMIT $index_num_pos_dates";
       $filts2 = "";
+      $to_csv   = isset($_POST["to_csv"]) ? $_POST["to_csv"] : '';
       $f_hid   = isset($_POST["f_hid"]) ? $_POST["f_hid"] : '';
       $fio     = isset($_POST["fio"]) ? $_POST["fio"] : '';
       $docum   = isset($_POST["docum"]) ? $_POST["docum"] : '';
@@ -1104,36 +1105,44 @@ case 'posm' : {   /* START ПОСЕТИТЕЛИ - МОНИТОРИНГ */
       <tr><td>'.$loc_visitors_come.' :</td>
          <td colspan="2">'.DateSelector("din1", $din1).'-'.DateSelector("din2", $din2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tin1", $tin1).'-'.TimeSelector("tin2", $tin2).'</td></tr>
-      <tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="'.$loc_filtes_hint_date_out.'"> '.$loc_visitors_gone.' :&nbsp;&nbsp;</td>
+      <tr><td><INPUT type="checkbox" name="st_out" class="btn"'.$st_out_html.' title="'.$loc_filtes_hint_date_out.'" id="st_out"> <label for="st_out">'.$loc_visitors_gone.' :</label>&nbsp;&nbsp;</td>
          <td colspan="2">'.DateSelector("dout1", $dout1).'-'.DateSelector("dout2", $dlc2).'&nbsp;&nbsp;&nbsp;|&&|&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tout1", $tout1).'-'.TimeSelector("tout2", $tout2).'</td></tr>
-      <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="'.$loc_filtes_hint_date_last_change.'">'.$loc_filters_timestamp.'</td>
+      <tr><td><INPUT type="checkbox" name="st_lc" class="btn"'.$st_lc_html.' title="'.$loc_filtes_hint_date_last_change.'" id="st_lc"><label for="st_lc">'.$loc_filters_timestamp.'</label></td>
          <td>'.$loc_filterdates_since.' '.DateSelector("dlc1", $dlc1).'&nbsp;&nbsp;&nbsp;
             '.TimeSelector("tlc1", $tlc1).'</td>
             <td>'.$loc_filterdates_to.' '.DateSelector("dlc2", $dlc2).'&nbsp;&nbsp;&nbsp;'.TimeSelector("tlc2", $tlc2).'</td></tr>
       <tr><td>'.$loc_visitors_ticket.' :</td>
          <td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> '.$loc_visitors_target.' :
             <INPUT type="text" name="prim" size="20" maxlength="200" value="'.htmlspecialchars($prim, ENT_QUOTES).'"></td>
-         <td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">'.$print_link.'
+         <td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">
+            <INPUT type="checkbox" name="to_csv" id="to_csv"><label for="to_csv">CSV</label>'.$print_link.'
             <INPUT type="submit" class="btn" onclick="this.disabled = true; submit();" value="'.$admin_apply_filters.'"> '.$admin_cancel_button.'</td></tr>
       </table></form>' ;
 
       if ($status_string != '') { print '<font class="usop_alert">'.$status_string.'</font><hr>'; }
 
-      print '<Br><table><tr><td class="std">'.$loc_visitors_come.'</td>
-            <td class="std">'.$loc_search_surname_short.'</td>
-            <td class="std">'.$loc_visitors_document_short.'</td>
-            <td class="std">'.$loc_visitors_ticket.'</td>
-            <td class="std">'.$loc_visitors_target.'</td>
-            <td class="std">'.$loc_visitors_gone.'</td>
-            <td class="std">'.$loc_visitors_last_change.'</td> <td class="std">'.$loc_visitors_creator.'</td></tr>';
+      if ($to_csv == 'on') {
+         print '<textarea cols="110" rows="30">'."\n\"".$loc_visitors_come.'", "'.$loc_search_surname_short.'", "'.$loc_visitors_document_short.'", "'.$loc_visitors_ticket.'", "'.$loc_visitors_target.'", "'.$loc_visitors_gone.'", "'.$loc_visitors_last_change.'", "'.$loc_visitors_creator."\"\n";
+      } else {
+         print '<Br><table><tr><td class="std">'.$loc_visitors_come.'</td>
+               <td class="std">'.$loc_search_surname_short.'</td>
+               <td class="std">'.$loc_visitors_document_short.'</td>
+               <td class="std">'.$loc_visitors_ticket.'</td>
+               <td class="std">'.$loc_visitors_target.'</td>
+               <td class="std">'.$loc_visitors_gone.'</td>
+               <td class="std">'.$loc_visitors_last_change.'</td> <td class="std">'.$loc_visitors_creator.'</td></tr>';
+      };
+
       $dates_res = mysqli_query ($sql, "SELECT DISTINCT date_in FROM visits_pos WHERE $filts1") ; $i = 0;
       while ($dates_row = mysqli_fetch_array($dates_res)) {
          $cu_datee = $dates_row["date_in"];
          $lviss_res = mysqli_query ($sql, "SELECT vp.*, op.login FROM visits_pos vp
                                     LEFT JOIN operators op ON op.id = vp.operator_id
                                     WHERE vp.`date_in` = '$cu_datee' $filts2 ORDER BY ISNULL(vp.date_out) DESC, vp.time_in DESC, vp.fio") ;
-         if (mysqli_num_rows($lviss_res) != 0) { print '<tr><td colspan="8" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; }
+         if (mysqli_num_rows($lviss_res) != 0) {
+             if ( $to_csv != 'on') { print '<tr><td colspan="8" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; };
+         }
          while ($lvs_row = mysqli_fetch_array($lviss_res)) {
             $i++;
 
@@ -1146,6 +1155,9 @@ case 'posm' : {   /* START ПОСЕТИТЕЛИ - МОНИТОРИНГ */
                   if ($user_info["is_root"] == 1 AND $prnt != 1) { $cu_edit_lnk .= ' <a href="?ops=epos&amp;id='.$lvs_row["id"].'"><font class="comment">['.$loc_link_edit.']</font></a>'; }
             };
 
+            if ($to_csv == 'on') {
+               print '"'.$cu_datee.' '.$lvs_row["time_in"].'","'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'","'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'","'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'","'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'","'.$lvs_row["date_out"].' '.$lvs_row["time_out"].'","'.$lvs_row["change_date"].'","'.htmlspecialchars($lvs_row["login"])."\"\n";
+            } else {
             print '<tr><td class="sml">'.$lvs_row["time_in"].'</td>
                <td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td>
                <td class="sml">'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'</td>
@@ -1154,10 +1166,11 @@ case 'posm' : {   /* START ПОСЕТИТЕЛИ - МОНИТОРИНГ */
                <td class="sml">'.$cu_edit_lnk.'</td>
                <td class="sml">'.$lvs_row["change_date"].'</td>
                <td class="sml">'.htmlspecialchars($lvs_row["login"]).'</td></tr>';
+            };
          }
       }
       if ($i == 0) { print '<tr><td colspan="8"><Br></td></tr><tr><td colspan="8" class="usop_alert">'.$admin_no_data.'</td></tr>'; }
-      print '</table><Br>';
+      if ($to_csv == 'on') { print '</textarea>'; } else { print '</table><Br>'; };
    }
 break; }   /* END ПОСЕТИТЕЛИ - МОНИТОРИНГ */
 
@@ -1167,6 +1180,7 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
    if ($user_info["is_root"] == 1 OR $user_info["is_administrator"] == 1) {
       $filts1 = "`date_in` <= '$curr_date' ORDER BY date_in DESC LIMIT $index_num_avt_dates";
       $filts2 = "";
+      $to_csv   = isset($_POST["to_csv"]) ? $_POST["to_csv"] : '';
       $f_hid   = isset($_POST["f_hid"]) ? $_POST["f_hid"] : '';
       $fio     = isset ($_POST["fio"]) ? $_POST["fio"] : '';
       $car     = isset ($_POST["car"]) ? $_POST["car"] : '';
@@ -1263,11 +1277,15 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
       <tr><td>'.$loc_visitors_ticket.' :</td>
          <td><INPUT type="text" name="propusk" size="5" maxlength="20" value="'.htmlspecialchars($propusk, ENT_QUOTES).'"> '.$loc_visitors_target.' :
                <INPUT type="text" name="prim" size="20" maxlength="200" value="'.htmlspecialchars($prim, ENT_QUOTES).'"></td>
-         <td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">'.$print_link.'<INPUT type="submit" class="btn" onclick="this.disabled = true; submit();" value="'.$admin_apply_filters.'"> '.$admin_cancel_button.'</td></tr>
+         <td class="btntd"><INPUT type="hidden" name="f_hid" value="yes">
+         <INPUT type="checkbox" name="to_csv" id="to_csv"><label for="to_csv">CSV</label>'.$print_link.'<INPUT type="submit" class="btn" onclick="this.disabled = true; submit();" value="'.$admin_apply_filters.'"> '.$admin_cancel_button.'</td></tr>
       </table></form>' ;
 
       if ($status_string != '') { print '<font class="usop_alert">'.$status_string.'</font><hr>'; }
 
+      if ($to_csv == 'on') {
+         print '<textarea cols="110" rows="30">'."\n\"".$loc_cars_arrived.'", "'.$loc_search_surname_short.'", "'.$loc_cars_carnumber.'", "'.$loc_visitors_document_short.'", "'.$loc_visitors_ticket.'", "'.$loc_visitors_target.'", "'.$loc_cars_gone.'", "'.$loc_visitors_last_change.'", "'.$loc_visitors_creator."\"\n";
+      } else {
       print '<Br><table><tr><td class="std">'.$loc_cars_arrived.'</td>
          <td class="std">'.$loc_search_surname_short.'</td>
          <td class="std">'.$loc_cars_carnumber.'</td>
@@ -1277,6 +1295,7 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
          <td class="std">'.$loc_cars_gone.'</td>
          <td class="std">'.$loc_visitors_last_change.'</td>
          <td class="std">'.$loc_visitors_creator.'</td></tr>';
+      };
 
       $dates_res = mysqli_query ($sql, "SELECT DISTINCT date_in FROM visits_avt WHERE $filts1") ; $i = 0 ;
       while ($dates_row = mysqli_fetch_array($dates_res)) {
@@ -1284,7 +1303,9 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
          $lviss_res = mysqli_query ($sql, "SELECT vp.*, op.login FROM visits_avt vp
                                     LEFT JOIN operators op ON op.id = vp.operator_id
                                     WHERE vp.`date_in` = '$cu_datee' $filts2 ORDER BY ISNULL(vp.date_out) DESC, vp.time_in DESC, vp.fio") ;
-         if (mysqli_num_rows($lviss_res) != 0) { print '<tr><td colspan="9" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; }
+         if (mysqli_num_rows($lviss_res) != 0) {
+            if ( $to_csv != 'on') { print '<tr><td colspan="9" class="usop_alert">[ '.comp2hum_date($cu_datee).' ]</td></tr>'; };
+         }
          while ($lvs_row = mysqli_fetch_array($lviss_res)) {
             $i++;
 
@@ -1297,6 +1318,9 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
                   if ($user_info["is_root"] == 1 AND $prnt != 1) { $cu_edit_lnk .= ' <a href="?ops=eavt&amp;id='.$lvs_row["id"].'"><font class="comment">['.$loc_link_edit.']</font></a>'; }
             };
 
+            if ($to_csv == 'on') {
+               print '"'.$cu_datee.' '.$lvs_row["time_in"].'","'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'","'.htmlspecialchars($lvs_row["car"], ENT_QUOTES).'","'.htmlspecialchars($lvs_row["docum"], ENT_QUOTES).'","'.htmlspecialchars($lvs_row["propusk"], ENT_QUOTES).'","'.htmlspecialchars($lvs_row["prim"], ENT_QUOTES).'","'.$lvs_row["date_out"].' '.$lvs_row["time_out"].'","'.$lvs_row["change_date"].'","'.htmlspecialchars($lvs_row["login"])."\"\n";
+            } else {
             print '<tr><td class="sml">'.$lvs_row["time_in"].'</td>
                   <td class="sml">'.htmlspecialchars($lvs_row["fio"], ENT_QUOTES).'</td>
                   <td class="sml">'.htmlspecialchars($lvs_row["car"], ENT_QUOTES).'</td>
@@ -1306,10 +1330,11 @@ case 'avtm' : {   /* START АВТОМОБИЛИ - МОНИТОРИНГ */
                   <td class="sml">'.$cu_edit_lnk.'</td>
                   <td class="sml">'.$lvs_row["change_date"].'</td>
                   <td class="sml">'.htmlspecialchars($lvs_row["login"]).'</td></tr>';
+            };
          }
       }
       if ($i == 0) { print '<tr><td colspan="9"><Br></td></tr><tr><td colspan="9" class="usop_alert">'.$admin_no_data.'</td></tr>'; }
-      print '</table></form><Br>';
+      if ($to_csv == 'on') { print '</textarea>'; } else { print '</table></form><Br>'; };
    }
 break; }   /* END АВТОМОБИЛИ - МОНИТОРИНГ */
 
